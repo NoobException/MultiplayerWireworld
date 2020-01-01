@@ -4,11 +4,12 @@
 #include <SFML/Graphics.hpp>
 
 #include "Game.hpp"
+#include "ClientNetworkController.hpp"
 
 class GameRenderer
 {
 public:
-    GameRenderer(Game &game);
+    GameRenderer(Game &game, ClientNetworkController &controller);
     void run();
 
 private:
@@ -28,7 +29,12 @@ private:
                                  TAIL_COLOR,
                                  HEAD_COLOR};
 
+
+    ClientNetworkController &controller;
+
     sf::View canvas;
+    sf::View HUD;
+    
     sf::RenderWindow window;
     Game &game;
     bool running;
@@ -43,6 +49,7 @@ private:
     void drawBackground();
     void drawCell(int x, int y, sf::Color color);
     void processWindowEvents();
+    void processNetworkEvents();
 
     const sf::Keyboard::Key MOVE_VIEW_KEY = sf::Keyboard::LShift;
     bool movingView();
@@ -58,6 +65,9 @@ private:
     void canvasClick(int x, int y, sf::Mouse::Button);
     void mouseMove(int x, int y);
     void zoom(int x, int y, float z);
+
+
+    void sendCellChanged(int x, int y, State state);
 };
 #endif // GAME_RENDERER_HPP
 

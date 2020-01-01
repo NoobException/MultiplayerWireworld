@@ -38,6 +38,8 @@ public:
     WireworldGrid(const WireworldGrid &other);
     virtual ~WireworldGrid();
 
+    const WireworldGrid& operator=(const WireworldGrid&);
+
     virtual void update() override;
 
     virtual void setCell(int x, int y, State state) override;

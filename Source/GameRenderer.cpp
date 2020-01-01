@@ -3,14 +3,15 @@
 
 #include "GameRenderer.hpp"
 
-GameRenderer::GameRenderer(Game &game) : canvas(sf::FloatRect({0.0, 0.0},
-                                                              (sf::Vector2f)CANVAS_SIZE)),
-                                        window(
-                                             sf::VideoMode(WINDOW_SIZE.x, WINDOW_SIZE.y),
-                                             "Wireworld Client",
-                                             sf::Style::Close | sf::Style::Titlebar),
-                                        game(game),
-                                        running(true)
+GameRenderer::GameRenderer(Game &game, ClientNetworkController &controller) : canvas(sf::FloatRect({0.0, 0.0},
+                                                                                                   (sf::Vector2f)CANVAS_SIZE)),
+                                                                              window(
+                                                                                  sf::VideoMode(WINDOW_SIZE.x, WINDOW_SIZE.y),
+                                                                                  "Wireworld Client",
+                                                                                  sf::Style::Close | sf::Style::Titlebar),
+                                                                              game(game),
+                                                                              running(true),
+                                                                              controller(controller)
 {
     canvas.setViewport(sf::FloatRect(CANVAS_POS.x / WINDOW_SIZE.x,
                                      CANVAS_POS.y / WINDOW_SIZE.y,
@@ -24,13 +25,15 @@ void GameRenderer::run()
     sf::Clock clock;
     while (running && window.isOpen())
     {
+        /*
         if (clock.getElapsedTime().asMilliseconds() >= 100)
         {
             game.grid.update();
             clock.restart();
-        }
+        }*/
 
         processWindowEvents();
+        processNetworkEvents();
         draw();
     }
 }
@@ -63,19 +66,28 @@ void GameRenderer::processWindowEvents()
         case sf::Event::KeyPressed:
             switch (event.key.code)
             {
-                case sf::Keyboard::Num1:
-                case sf::Keyboard::Num2:
-                case sf::Keyboard::Num3:
-                case sf::Keyboard::Num4:
-                    selected_state = (int)event.key.code - (int)sf::Keyboard::Num1;
-                    break;
-                default:
-                    break;
+            case sf::Keyboard::Num1:
+            case sf::Keyboard::Num2:
+            case sf::Keyboard::Num4:
+                selected_state = (int)event.key.code - (int)sf::Keyboard::Num1;
+                break;
+            default:
+                break;
             }
             break;
         default:
             break;
         }
+    }
+}
+
+void GameRenderer::processNetworkEvents()
+{
+    while (controller.hasNextEvent())
+    {
+        NetworkEvent *event = controller.getNextEvent();
+        event->apply(game);
+        delete event;
     }
 }
 
@@ -128,9 +140,13 @@ void GameRenderer::canvasClick(int x, int y, sf::Mouse::Button b)
     y = pos.y;
     if (!game.grid.isOnGrid(x, y))
         return;
-    // State s = (b == sf::Mouse::Left ? State::COND : State::NONE);
+
     State s = (State)selected_state;
-    game.grid.setCell(pos.x, pos.y, s);
+    if (b == sf::Mouse::Right)
+        s = State::NONE;
+
+    // game.grid.setCell(x, y, s);
+    sendCellChanged(x, y, s);
 }
 
 void GameRenderer::mouseMove(int x, int y)
@@ -192,7 +208,7 @@ void GameRenderer::drawBackground()
     bg.setOutlineThickness(4);
     bg.setOutlineColor({255, 255, 255});
     bg.setFillColor(NONE_COLOR);
-    bg.setPosition({0,0});
+    bg.setPosition({0, 0});
     bg.setSize({width * CELL_SIZE, height * CELL_SIZE});
     window.draw(bg);
 }
@@ -206,4 +222,11 @@ void GameRenderer::drawCell(int x, int y, sf::Color color)
     cell.setOutlineColor(sf::Color(40, 40, 40));
     cell.setFillColor(color);
     window.draw(cell);
+}
+
+void GameRenderer::sendCellChanged(int x, int y, State s)
+{
+    NetworkEvent *event = new CellChangedEvent(x, y, s);
+    controller.sendEvent(event);
+    delete event;
 }

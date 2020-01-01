@@ -62,7 +62,7 @@ NewPlayerEvent::NewPlayerEvent(sf::Packet &data) : width(getIntFromPacket(data))
         for (int y = 0; y < height; y++)
         {
             unsigned char state = currentByte & (unsigned char)3;
-            state >>= 2;
+            currentByte >>= 2;
             currentPosition++;
             if (currentPosition == 4)
             {

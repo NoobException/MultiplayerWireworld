@@ -1,6 +1,7 @@
 
 #include "GameRenderer.hpp"
 #include "ServerNetworkController.hpp"
+#include "ClientNetworkController.hpp"
 
 #define CLIENT
 int main()
@@ -20,7 +21,9 @@ int main()
     }
 #else
     Game game;
-    GameRenderer renderer(game);
+    sf::IpAddress addr("retardcraft.ddns.net");
+    ClientNetworkController controller(addr, 25565);
+    GameRenderer renderer(game, controller);
     renderer.run();
 #endif
 }

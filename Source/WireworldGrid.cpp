@@ -2,6 +2,7 @@
 #include "GridInterface.hpp"
 
 #include <string>
+#include <iostream>
 
 WireworldGrid::WireworldGrid(int width, int height) : grid(nullptr), width(0), height(0)
 {
@@ -12,6 +13,13 @@ WireworldGrid::WireworldGrid(const WireworldGrid &other) : WireworldGrid(other.w
 {
     for (int i = 0; i < other.width * other.height; i++)
         this->grid[i] = other.grid[i];
+}
+
+const WireworldGrid& WireworldGrid::operator=(const WireworldGrid& other)
+{
+    for (int i = 0; i < other.width * other.height; i++)
+        this->grid[i] = other.grid[i];
+    return other;
 }
 
 WireworldGrid::~WireworldGrid()

@@ -1,4 +1,5 @@
 #include "ClientNetworkController.hpp"
+#include "NetworkEventFactory.hpp"
 
 ClientNetworkController::ClientNetworkController(sf::IpAddress address, int port) : clientThread(&clientLoop, this)
 {
@@ -13,7 +14,7 @@ void ClientNetworkController::clientLoop()
         sf::Packet data;
         if (socket.receive(data) == sf::Socket::Done)
         {
-            NetworkEvent *event = nullptr;
+            NetworkEvent *event = NetworkEventFactory::newNetworkEvent(data);
             queueMutex.lock();
             events.push(event);
             queueMutex.unlock();
