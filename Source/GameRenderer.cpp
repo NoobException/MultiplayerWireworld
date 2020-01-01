@@ -20,8 +20,15 @@ GameRenderer::GameRenderer(Game &game) : game(game),
 
 void GameRenderer::run()
 {
+    sf::Clock clock;
     while (running && window.isOpen())
     {
+        if (clock.getElapsedTime().asMilliseconds() >= 100)
+        {
+            game.grid.update();
+            clock.restart();
+        }
+
         processWindowEvents();
         draw();
     }
@@ -51,6 +58,17 @@ void GameRenderer::processWindowEvents()
                  event.mouseWheelScroll.y,
                  event.mouseWheelScroll.delta);
             break;
+
+        case sf::Event::KeyPressed:
+            switch (event.key.code)
+            {
+                case sf::Keyboard::Num1:
+                case sf::Keyboard::Num2:
+                case sf::Keyboard::Num3:
+                case sf::Keyboard::Num4:
+                    selected_state = (int)event.key.code - (int)sf::Keyboard::Num1;
+                    break;
+            }
         }
     }
 }
@@ -100,7 +118,10 @@ void GameRenderer::canvasClick(int x, int y, sf::Mouse::Button b)
     sf::Vector2f pos = window.mapPixelToCoords(sf::Vector2i(x, y));
     pos.x /= CELL_SIZE;
     pos.y /= CELL_SIZE;
-    State s = (b == sf::Mouse::Left ? State::COND : State::NONE);
+    x = pos.x;
+    y = pos.y;
+    // State s = (b == sf::Mouse::Left ? State::COND : State::NONE);
+    State s = (State)selected_state;
     game.grid.setCell(pos.x, pos.y, s);
 }
 
@@ -148,20 +169,20 @@ void GameRenderer::drawCanvas()
     {
         for (int y = 0; y < 64; y++)
         {
-            if (game.grid.getCell(x, y) == State::COND)
-                drawCell(x, y);
+            State s = game.grid.getCell(x, y);
+            sf::Color color = COLORS[(int)s];
+            drawCell(x, y, color);
         }
     }
 }
 
-void GameRenderer::drawCell(int x, int y)
+void GameRenderer::drawCell(int x, int y, sf::Color color)
 {
     sf::RectangleShape cell;
     cell.setPosition(x * CELL_SIZE, y * CELL_SIZE);
     cell.setSize(sf::Vector2f(CELL_SIZE - 1, CELL_SIZE - 1));
     cell.setOutlineThickness(0);
     cell.setOutlineColor(sf::Color(40, 40, 40));
-    sf::Color color = {180, 200, 70};
     cell.setFillColor(color);
     window.draw(cell);
 }

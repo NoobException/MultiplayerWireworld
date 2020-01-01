@@ -45,7 +45,7 @@ public:
     virtual void update() override;
 
     virtual void setCell(int x, int y, State state) override;
-    virtual State getCell(int x, int y) override;
+    virtual State getCell(int x, int y);
 
 private:
 
