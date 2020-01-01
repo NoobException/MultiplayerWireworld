@@ -29,12 +29,11 @@ private:
                                  TAIL_COLOR,
                                  HEAD_COLOR};
 
-
     ClientNetworkController &controller;
 
     sf::View canvas;
     sf::View HUD;
-    
+
     sf::RenderWindow window;
     Game &game;
     bool running;
@@ -66,8 +65,6 @@ private:
     void mouseMove(int x, int y);
     void zoom(int x, int y, float z);
 
-
     void sendCellChanged(int x, int y, State state);
 };
 #endif // GAME_RENDERER_HPP
-

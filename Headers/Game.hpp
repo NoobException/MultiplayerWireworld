@@ -9,6 +9,7 @@ class Game
     friend class ServerNetworkController;
     friend class NewPlayerEvent;
     friend class CellChangedEvent;
+    friend class AdvanceSimulationEvent;
 
 public:
     Game();

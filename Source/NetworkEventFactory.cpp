@@ -10,5 +10,7 @@ NetworkEvent *NetworkEventFactory::newNetworkEvent(sf::Packet &data)
         return new CellChangedEvent(data);
     case NEW_CLIENT:
         return new NewPlayerEvent(data);
+    case ADVANCE_SIMULATION:
+        return new AdvanceSimulationEvent(data);
     }
 };

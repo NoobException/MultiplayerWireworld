@@ -107,3 +107,19 @@ sf::Packet NewPlayerEvent::toPacket()
         packet << currentByte;
     return packet;
 }
+AdvanceSimulationEvent::AdvanceSimulationEvent(){};
+AdvanceSimulationEvent::AdvanceSimulationEvent(sf::Packet &data){};
+Type AdvanceSimulationEvent::getType()
+{
+    return ADVANCE_SIMULATION;
+};
+sf::Packet toPacket()
+{
+    sf::Packet packet;
+    packet << (unsigned char)ADVANCE_SIMULATION;
+    return packet;
+};
+void apply(Game &game)
+{
+    game.grid.update();
+};
