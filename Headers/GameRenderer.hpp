@@ -40,6 +40,7 @@ private:
     float current_zoom = 1;
     void draw();
     void drawCanvas();
+    void drawBackground();
     void drawCell(int x, int y, sf::Color color);
     void processWindowEvents();
 

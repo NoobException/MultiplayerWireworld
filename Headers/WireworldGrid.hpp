@@ -42,6 +42,7 @@ public:
 
     virtual void setCell(int x, int y, State state) override;
     virtual State getCell(int x, int y);
+    bool isOnGrid(int x, int y);
     int getWidth();
     int getHeight();
 

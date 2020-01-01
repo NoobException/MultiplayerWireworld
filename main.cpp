@@ -2,7 +2,7 @@
 #include "GameRenderer.hpp"
 #include "ServerNetworkController.hpp"
 
-#define SERVER
+#define CLIENT
 int main()
 {
 #ifdef SERVER

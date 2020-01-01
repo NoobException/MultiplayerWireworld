@@ -103,10 +103,10 @@ sf::Vector2i GameRenderer::getRelPos(int x, int y)
 
 void GameRenderer::mouseClick(int x, int y, sf::Mouse::Button b)
 {
+    mousePressed = true;
     lastMousePos = {x, y};
     if (movingView())
         return;
-    mousePressed = true;
     if (!posInCanvas(x, y))
         guiClick(x, y, b);
     else
@@ -126,6 +126,8 @@ void GameRenderer::canvasClick(int x, int y, sf::Mouse::Button b)
     pos.y /= CELL_SIZE;
     x = pos.x;
     y = pos.y;
+    if (!game.grid.isOnGrid(x, y))
+        return;
     // State s = (b == sf::Mouse::Left ? State::COND : State::NONE);
     State s = (State)selected_state;
     game.grid.setCell(pos.x, pos.y, s);
@@ -136,7 +138,7 @@ void GameRenderer::mouseMove(int x, int y)
     if (!posInCanvas(lastMousePos.x, lastMousePos.y))
         return;
 
-    if (movingView() && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+    if (movingView() && mousePressed)
     {
         float dx = x - lastMousePos.x;
         float dy = y - lastMousePos.y;
@@ -170,6 +172,7 @@ void GameRenderer::draw()
 void GameRenderer::drawCanvas()
 {
     window.setView(canvas);
+    drawBackground();
     for (int x = 0; x < 64; x++)
     {
         for (int y = 0; y < 64; y++)
@@ -179,6 +182,19 @@ void GameRenderer::drawCanvas()
             drawCell(x, y, color);
         }
     }
+}
+
+void GameRenderer::drawBackground()
+{
+    int width = game.grid.getWidth();
+    int height = game.grid.getHeight();
+    sf::RectangleShape bg;
+    bg.setOutlineThickness(4);
+    bg.setOutlineColor({255, 255, 255});
+    bg.setFillColor(NONE_COLOR);
+    bg.setPosition({0,0});
+    bg.setSize({width * CELL_SIZE, height * CELL_SIZE});
+    window.draw(bg);
 }
 
 void GameRenderer::drawCell(int x, int y, sf::Color color)

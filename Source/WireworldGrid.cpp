@@ -119,6 +119,13 @@ State WireworldGrid::getCell(int x, int y)
     return this->grid[y * this->width + x];
 }
 
+bool WireworldGrid::isOnGrid(int x, int y)
+{
+    if (x < 0 || x >= this->width || y < 0 || y >= this->height)
+        return false;
+    return true;
+}
+
 int WireworldGrid::getWidth()
 {
     return this->width;
