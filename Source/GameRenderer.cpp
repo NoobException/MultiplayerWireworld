@@ -3,25 +3,33 @@
 
 #include "GameRenderer.hpp"
 
-GameRenderer::GameRenderer(Game &game) : game(game),
-                                         window(
+GameRenderer::GameRenderer(Game &game) : canvas(sf::FloatRect({0.0, 0.0},
+                                                              (sf::Vector2f)CANVAS_SIZE)),
+                                        window(
                                              sf::VideoMode(WINDOW_SIZE.x, WINDOW_SIZE.y),
                                              "Wireworld Client",
                                              sf::Style::Close | sf::Style::Titlebar),
-                                         canvas(sf::FloatRect({0.0, 0.0},
-                                                              (sf::Vector2f)CANVAS_SIZE)),
-                                         running(true)
+                                        game(game),
+                                        running(true)
 {
     canvas.setViewport(sf::FloatRect(CANVAS_POS.x / WINDOW_SIZE.x,
                                      CANVAS_POS.y / WINDOW_SIZE.y,
                                      CANVAS_SIZE.x / WINDOW_SIZE.x,
                                      CANVAS_SIZE.y / WINDOW_SIZE.y));
+    window.setFramerateLimit(60);
 }
 
 void GameRenderer::run()
 {
+    sf::Clock clock;
     while (running && window.isOpen())
     {
+        if (clock.getElapsedTime().asMilliseconds() >= 100)
+        {
+            game.grid.update();
+            clock.restart();
+        }
+
         processWindowEvents();
         draw();
     }
@@ -51,6 +59,22 @@ void GameRenderer::processWindowEvents()
                  event.mouseWheelScroll.y,
                  event.mouseWheelScroll.delta);
             break;
+
+        case sf::Event::KeyPressed:
+            switch (event.key.code)
+            {
+                case sf::Keyboard::Num1:
+                case sf::Keyboard::Num2:
+                case sf::Keyboard::Num3:
+                case sf::Keyboard::Num4:
+                    selected_state = (int)event.key.code - (int)sf::Keyboard::Num1;
+                    break;
+                default:
+                    break;
+            }
+            break;
+        default:
+            break;
         }
     }
 }
@@ -74,7 +98,7 @@ sf::Vector2i GameRenderer::getRelPos(int x, int y)
 {
     window.setView(canvas);
     sf::Vector2f pos = window.mapPixelToCoords(sf::Vector2i(x, y));
-    return {pos.x, pos.y};
+    return {static_cast<int>(pos.x), static_cast<int>(pos.y)};
 }
 
 void GameRenderer::mouseClick(int x, int y, sf::Mouse::Button b)
@@ -100,7 +124,10 @@ void GameRenderer::canvasClick(int x, int y, sf::Mouse::Button b)
     sf::Vector2f pos = window.mapPixelToCoords(sf::Vector2i(x, y));
     pos.x /= CELL_SIZE;
     pos.y /= CELL_SIZE;
-    State s = (b == sf::Mouse::Left ? State::COND : State::NONE);
+    x = pos.x;
+    y = pos.y;
+    // State s = (b == sf::Mouse::Left ? State::COND : State::NONE);
+    State s = (State)selected_state;
     game.grid.setCell(pos.x, pos.y, s);
 }
 
@@ -147,20 +174,20 @@ void GameRenderer::drawCanvas()
     {
         for (int y = 0; y < 64; y++)
         {
-            if (game.grid.getCell(x, y) == State::COND)
-                drawCell(x, y);
+            State s = game.grid.getCell(x, y);
+            sf::Color color = COLORS[(int)s];
+            drawCell(x, y, color);
         }
     }
 }
 
-void GameRenderer::drawCell(int x, int y)
+void GameRenderer::drawCell(int x, int y, sf::Color color)
 {
     sf::RectangleShape cell;
     cell.setPosition(x * CELL_SIZE, y * CELL_SIZE);
     cell.setSize(sf::Vector2f(CELL_SIZE - 1, CELL_SIZE - 1));
     cell.setOutlineThickness(0);
     cell.setOutlineColor(sf::Color(40, 40, 40));
-    sf::Color color = {180, 200, 70};
     cell.setFillColor(color);
     window.draw(cell);
 }
