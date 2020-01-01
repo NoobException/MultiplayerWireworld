@@ -59,3 +59,4 @@ private:
     void zoom(int x, int y, float z);
 };
 #endif // GAME_RENDERER_HPP
+

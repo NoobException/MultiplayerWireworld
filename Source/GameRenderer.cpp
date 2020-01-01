@@ -3,19 +3,20 @@
 
 #include "GameRenderer.hpp"
 
-GameRenderer::GameRenderer(Game &game) : game(game),
-                                         window(
+GameRenderer::GameRenderer(Game &game) : canvas(sf::FloatRect({0.0, 0.0},
+                                                              (sf::Vector2f)CANVAS_SIZE)),
+                                        window(
                                              sf::VideoMode(WINDOW_SIZE.x, WINDOW_SIZE.y),
                                              "Wireworld Client",
                                              sf::Style::Close | sf::Style::Titlebar),
-                                         canvas(sf::FloatRect({0.0, 0.0},
-                                                              (sf::Vector2f)CANVAS_SIZE)),
-                                         running(true)
+                                        game(game),
+                                        running(true)
 {
     canvas.setViewport(sf::FloatRect(CANVAS_POS.x / WINDOW_SIZE.x,
                                      CANVAS_POS.y / WINDOW_SIZE.y,
                                      CANVAS_SIZE.x / WINDOW_SIZE.x,
                                      CANVAS_SIZE.y / WINDOW_SIZE.y));
+    window.setFramerateLimit(60);
 }
 
 void GameRenderer::run()
@@ -68,7 +69,12 @@ void GameRenderer::processWindowEvents()
                 case sf::Keyboard::Num4:
                     selected_state = (int)event.key.code - (int)sf::Keyboard::Num1;
                     break;
+                default:
+                    break;
             }
+            break;
+        default:
+            break;
         }
     }
 }
@@ -92,7 +98,7 @@ sf::Vector2i GameRenderer::getRelPos(int x, int y)
 {
     window.setView(canvas);
     sf::Vector2f pos = window.mapPixelToCoords(sf::Vector2i(x, y));
-    return {pos.x, pos.y};
+    return {static_cast<int>(pos.x), static_cast<int>(pos.y)};
 }
 
 void GameRenderer::mouseClick(int x, int y, sf::Mouse::Button b)
