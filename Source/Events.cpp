@@ -113,13 +113,13 @@ Type AdvanceSimulationEvent::getType()
 {
     return ADVANCE_SIMULATION;
 };
-sf::Packet toPacket()
+sf::Packet AdvanceSimulationEvent::toPacket()
 {
     sf::Packet packet;
     packet << (unsigned char)ADVANCE_SIMULATION;
     return packet;
 };
-void apply(Game &game)
+void AdvanceSimulationEvent::apply(Game &game)
 {
     game.grid.update();
 };

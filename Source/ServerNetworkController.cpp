@@ -21,13 +21,16 @@ void ServerNetworkController::serverLoop()
                 sf::TcpSocket *client = new sf::TcpSocket;
                 if (listener.accept(*client) == sf::Socket::Done)
                 {
+                    std::cout << "Henlo" << std::endl;
                     clients.push_back(client);
                     selector.add(*client);
                     gameMutex.lock();
                     NewPlayerEvent event(game.grid);
                     gameMutex.unlock();
                     sf::Packet packet = event.toPacket();
+                    sendMutex.lock();
                     client->send(packet);
+                    sendMutex.unlock();
                 }
                 else
                 {
@@ -49,12 +52,14 @@ void ServerNetworkController::serverLoop()
                             queueMutex.lock();
                             events.push(event);
                             queueMutex.unlock();
+                            sendMutex.lock();
                             for (sf::TcpSocket *recepient : clients)
                                 recepient->send(packet);
+                            sendMutex.unlock();
                         }
                         else if (status == sf::Socket::Disconnected)
                         {
-                            std::cout << "bye" << std::endl;
+                            std::cout << "Bye" << std::endl;
                             selector.remove(client);
                             delete *it;
                             it = clients.erase(it);
@@ -79,4 +84,12 @@ NetworkEvent *ServerNetworkController::getNextEvent()
     events.pop();
     queueMutex.unlock();
     return ans;
+}
+void ServerNetworkController::sendEvent(NetworkEvent *event)
+{
+    sf::Packet packet = event->toPacket();
+    sendMutex.lock();
+    for (sf::TcpSocket *recepient : clients)
+        recepient->send(packet);
+    sendMutex.unlock();
 }

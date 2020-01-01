@@ -15,7 +15,7 @@ WireworldGrid::WireworldGrid(const WireworldGrid &other) : WireworldGrid(other.w
         this->grid[i] = other.grid[i];
 }
 
-const WireworldGrid& WireworldGrid::operator=(const WireworldGrid& other)
+const WireworldGrid &WireworldGrid::operator=(const WireworldGrid &other)
 {
     for (int i = 0; i < other.width * other.height; i++)
         this->grid[i] = other.grid[i];
