@@ -1,8 +1,6 @@
 
 #include "GameRenderer.hpp"
 #include "ServerNetworkController.hpp"
-
-#define SERVER
 int main()
 {
 #ifdef SERVER
