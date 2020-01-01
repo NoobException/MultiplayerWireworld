@@ -8,9 +8,15 @@ WireworldGrid::WireworldGrid(int width, int height) : grid(nullptr), width(0), h
     this->createGrid(width, height);
 }
 
+WireworldGrid::WireworldGrid(const WireworldGrid& other) : WireworldGrid(other.width, other.height)
+{
+    for(int i = 0; i < other.width * other.height; i++)
+        this->grid[i] = other.grid[i];
+}
+
 WireworldGrid::~WireworldGrid()
 {
-    freeGrid();
+    this->freeGrid();
 }
 
 InvalidGridDimensionsException::InvalidGridDimensionsException(int width, int height) : width(width), height(height)

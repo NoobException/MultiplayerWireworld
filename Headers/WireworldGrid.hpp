@@ -40,6 +40,7 @@ class WireworldGrid : GridInterface
 public:
 
     WireworldGrid(int width, int height);
+    WireworldGrid(const WireworldGrid& other);
     virtual ~WireworldGrid();
 
     virtual void update() override;
