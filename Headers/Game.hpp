@@ -5,9 +5,14 @@
 
 class Game
 {
-friend class GameRenderer;
+    friend class GameRenderer;
+    friend class ServerNetworkController;
+    friend class NewPlayerEvent;
+    friend class CellChangedEvent;
+
 public:
     Game();
+
 private:
     WireworldGrid grid;
 };

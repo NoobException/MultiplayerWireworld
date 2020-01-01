@@ -95,7 +95,7 @@ void GameRenderer::mouseRelease(int x, int y)
 }
 
 void GameRenderer::guiClick(int x, int y, sf::Mouse::Button b) {}
-void GameRenderer::canvasClick(int x, int y, sf::Mouse::Button b) 
+void GameRenderer::canvasClick(int x, int y, sf::Mouse::Button b)
 {
     sf::Vector2f pos = window.mapPixelToCoords(sf::Vector2i(x, y));
     pos.x /= CELL_SIZE;
@@ -103,7 +103,6 @@ void GameRenderer::canvasClick(int x, int y, sf::Mouse::Button b)
     State s = (b == sf::Mouse::Left ? State::COND : State::NONE);
     game.grid.setCell(pos.x, pos.y, s);
 }
-
 
 void GameRenderer::mouseMove(int x, int y)
 {

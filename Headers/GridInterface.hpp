@@ -12,9 +12,8 @@ enum class State
 class GridInterface
 {
 public:
-
-    GridInterface() {};
-    virtual ~GridInterface() {};
+    GridInterface(){};
+    virtual ~GridInterface(){};
 
     virtual void update() = 0;
     virtual void setCell(int x, int y, State state) = 0;
@@ -22,4 +21,3 @@ public:
 };
 
 #endif
-
