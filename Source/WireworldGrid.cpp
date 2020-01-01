@@ -8,9 +8,15 @@ WireworldGrid::WireworldGrid(int width, int height) : grid(nullptr), width(0), h
     this->createGrid(width, height);
 }
 
+WireworldGrid::WireworldGrid(const WireworldGrid& other) : WireworldGrid(other.width, other.height)
+{
+    for(int i = 0; i < other.width * other.height; i++)
+        this->grid[i] = other.grid[i];
+}
+
 WireworldGrid::~WireworldGrid()
 {
-    freeGrid();
+    this->freeGrid();
 }
 
 InvalidGridDimensionsException::InvalidGridDimensionsException(int width, int height) : width(width), height(height)
@@ -60,12 +66,12 @@ void WireworldGrid::setCell(int x, int y, State state)
 {
     if(x < 0 || x >= this->width || y < 0 || y >= this->height)
         throw InvalidGridCoordinatesException(x, y, this->width, this->height);
-    grid[y * this->height + x] = state;
+    this->grid[y * this->height + x] = state;
 }
 
 State WireworldGrid::getCell(int x, int y)
 {
     if(x < 0 || x >= this->width || y < 0 || y >= this->height)
         throw InvalidGridCoordinatesException(x, y, this->width, this->height);
-    return grid[y * this->height + x];
+    return this->grid[y * this->height + x];
 }
