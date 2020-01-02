@@ -209,3 +209,20 @@ sf::Packet LineChangedEvent::toPacket()
     packet << (unsigned char)this->state;
     return packet;
 }
+
+ClearWiresEvent::ClearWiresEvent(){};
+ClearWiresEvent::ClearWiresEvent(sf::Packet &data){};
+Type ClearWiresEvent::getType()
+{
+    return CLEAR_WIRES;
+};
+sf::Packet ClearWiresEvent::toPacket()
+{
+    sf::Packet packet;
+    packet << (unsigned char)CLEAR_WIRES;
+    return packet;
+};
+void ClearWiresEvent::apply(Game &game)
+{
+    game.clearWires();
+};

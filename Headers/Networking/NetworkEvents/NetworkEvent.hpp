@@ -10,7 +10,7 @@ enum Type
     RECTANGLE_CHANGED,
     LINE_CHANGED,
     ADVANCE_SIMULATION,
-    CLEAR_WIRES,
+    CLEAR_WIRES
 };
 class NetworkEvent
 {

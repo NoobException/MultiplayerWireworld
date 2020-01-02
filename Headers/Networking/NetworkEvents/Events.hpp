@@ -42,6 +42,15 @@ public:
     sf::Packet toPacket() override;
     void apply(Game &game) override;
 };
+class ClearWiresEvent : public NetworkEvent
+{
+public:
+    ClearWiresEvent();
+    ClearWiresEvent(sf::Packet &data);
+    Type getType() override;
+    sf::Packet toPacket() override;
+    void apply(Game &game) override;
+};
 class RectangleChangedEvent : public NetworkEvent
 {
 public:
