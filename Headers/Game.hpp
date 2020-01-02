@@ -17,6 +17,7 @@ public:
     void setCell(int x, int y, State state);
     void setLine(int x1, int y1, int x2, int y2, State state);
     void setRectangle(int x1, int y1, int x2, int y2, State state);
+    void clearWires();
     Game(int width, int height);
 
 private:

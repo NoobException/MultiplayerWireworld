@@ -17,5 +17,7 @@ NetworkEvent *NetworkEventFactory::newNetworkEvent(sf::Packet &data)
         return new LineChangedEvent(data);
     case ADVANCE_SIMULATION:
         return new AdvanceSimulationEvent(data);
+    case CLEAR_WIRES:
+        return new ClearWiresEvent(data);
     }
 };

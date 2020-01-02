@@ -85,5 +85,6 @@ private:
     void sendCellChanged(int x, int y, State state);
 
     void advanceSimulation();
+    void clearWires();
 };
 #endif // GAME_RENDERER_HPP

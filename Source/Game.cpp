@@ -28,3 +28,15 @@ void Game::setRectangle(int x1, int y1, int x2, int y2, State state)
         for (int y = y1; y <= y2; y++)
             setCell(x, y, state);
 }
+
+void Game::clearWires()
+{
+    for (int x = 0; x < width; x++)
+        for (int y = 0; y < height; y++)
+        {
+            if (grid.getCell(x, y) == State::HEAD || grid.getCell(x, y) == State::TAIL)
+            {
+                grid.setCell(x, y, State::COND);
+            }
+        }
+}

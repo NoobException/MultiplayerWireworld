@@ -82,6 +82,9 @@ void GameRenderer::processWindowEvents()
             case sf::Keyboard::Space:
                 advanceSimulation();
                 break;
+            case sf::Keyboard::C:
+                clearWires();
+                break;
             default:
                 break;
             }
@@ -391,6 +394,13 @@ void GameRenderer::sendCellChanged(int x, int y, State s)
 void GameRenderer::advanceSimulation()
 {
     NetworkEvent *event = new AdvanceSimulationEvent();
+    controller.sendEvent(event);
+    delete event;
+}
+
+void GameRenderer::clearWires()
+{
+    NetworkEvent *event = new ClearWiresEvent();
     controller.sendEvent(event);
     delete event;
 }
