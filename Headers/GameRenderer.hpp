@@ -82,5 +82,7 @@ private:
 
     void sendDrawnObject();
     void sendCellChanged(int x, int y, State state);
+
+    void advanceSimulation();
 };
 #endif // GAME_RENDERER_HPP

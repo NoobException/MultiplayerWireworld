@@ -30,16 +30,16 @@ void GameRenderer::run()
     sf::Clock clock;
     while (running && window.isOpen())
     {
-        /*
-        if (clock.getElapsedTime().asMilliseconds() >= 100)
-        {
-            game.grid.update();
-            clock.restart();
-        }*/
 
         processWindowEvents();
         processNetworkEvents();
         draw();
+
+        std::string colors[4] = {"Empty", "Conductor", "Tail", "Head"};
+        std::string modes[3] = {"Dots", "Lines", "Rectangles"};
+        std::string color = colors[selected_state];
+        std::string m = modes[(int)mode];
+        window.setTitle("Wireworld. " + color + " " + m);
     }
 }
 
@@ -78,6 +78,9 @@ void GameRenderer::processWindowEvents()
                 break;
             case sf::Keyboard::Tab:
                 mode = (DrawMode)(((int)mode + 1) % 3);
+                break;
+            case sf::Keyboard::Space:
+                advanceSimulation();
                 break;
             default:
                 break;
@@ -158,6 +161,7 @@ void GameRenderer::canvasClick(int x, int y, sf::Mouse::Button b)
         drawnState = State::EMPTY;
 
     drawnObject = {{x, y}, {x, y}};
+    sendCellChanged(x, y, drawnState);
 }
 
 void GameRenderer::mouseMove(const int x, const int y)
@@ -294,6 +298,12 @@ void GameRenderer::drawBackground()
 
 void GameRenderer::drawDrawnObject()
 {
+    if (mousePressed == false)
+        return;
+
+    if (mode == DrawMode::DOTS)
+        return;
+
     int x, y;
     x = drawnObject.first.x;
     y = drawnObject.first.y;
@@ -378,12 +388,16 @@ void GameRenderer::sendCellChanged(int x, int y, State s)
     if (s == current_here || s == ghost_here)
         return;
 
-    //game.grid.setCell(x, y, s);
-    //return;
-
     game.ghosts.setCell(x, y, s);
 
     NetworkEvent *event = new CellChangedEvent(x, y, s);
+    controller.sendEvent(event);
+    delete event;
+}
+
+void GameRenderer::advanceSimulation()
+{
+    NetworkEvent *event = new AdvanceSimulationEvent();
     controller.sendEvent(event);
     delete event;
 }
