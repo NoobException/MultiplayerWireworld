@@ -3,10 +3,11 @@
 
 enum class State
 {
-    NONE,
+    EMPTY,
     COND,
     TAIL,
-    HEAD
+    HEAD,
+    NONE
 };
 
 class GridInterface

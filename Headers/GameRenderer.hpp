@@ -1,15 +1,21 @@
 #ifndef GAME_RENDERER_HPP
 #define GAME_RENDERER_HPP
 
+#include <utility>
+
 #include <SFML/Graphics.hpp>
 
 #include "Game.hpp"
 #include "ClientNetworkController.hpp"
 
+enum DrawMode
+{DOTS, LINE, RECT};
+
 class GameRenderer
 {
 public:
     GameRenderer(Game &game, ClientNetworkController &controller);
+    ~GameRenderer();
     void run();
 
 private:
@@ -19,16 +25,17 @@ private:
     const sf::Vector2i CANVAS_END = {CANVAS_POS.x + CANVAS_SIZE.x,
                                      CANVAS_POS.y + CANVAS_SIZE.y};
 
-    const sf::Color NONE_COLOR = {20, 20, 20};
+    const sf::Color EMPTY_COLOR = {20, 20, 20};
     const sf::Color COND_COLOR = {180, 200, 70};
     const sf::Color TAIL_COLOR = {200, 70, 50};
     const sf::Color HEAD_COLOR = {50, 70, 200};
 
-    const sf::Color COLORS[4] = {NONE_COLOR,
+    const sf::Color COLORS[4] = {EMPTY_COLOR,
                                  COND_COLOR,
                                  TAIL_COLOR,
                                  HEAD_COLOR};
 
+    State *ghosts;
 
     ClientNetworkController &controller;
 
@@ -44,10 +51,19 @@ private:
     const int CELL_SIZE = 10;
     const float ZOOM_FACTOR = 1.1f;
     float current_zoom = 1;
+
+    DrawMode mode = DrawMode::RECT;
+    State drawnState;
+    std::pair<sf::Vector2i, sf::Vector2i> drawnObject;
+
     void draw();
     void drawCanvas();
     void drawBackground();
+    void drawGrid();
+    void drawGhosts();
+    void drawDrawnObject();
     void drawCell(int x, int y, sf::Color color);
+
     void processWindowEvents();
     void processNetworkEvents();
 
@@ -66,7 +82,7 @@ private:
     void mouseMove(int x, int y);
     void zoom(int x, int y, float z);
 
-
+    void sendDrawnObject();
     void sendCellChanged(int x, int y, State state);
 };
 #endif // GAME_RENDERER_HPP

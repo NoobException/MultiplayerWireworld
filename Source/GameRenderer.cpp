@@ -18,6 +18,17 @@ GameRenderer::GameRenderer(Game &game, ClientNetworkController &controller) : ca
                                      CANVAS_SIZE.x / WINDOW_SIZE.x,
                                      CANVAS_SIZE.y / WINDOW_SIZE.y));
     window.setFramerateLimit(60);
+    int width = game.grid.getWidth();
+    int height = game.grid.getHeight();
+    ghosts = new State[width * height];
+    for (int i = 0; i < width * height; i++)
+    {
+        ghosts[i] = State::NONE;
+    }
+}
+
+GameRenderer::~GameRenderer()
+{
 }
 
 void GameRenderer::run()
@@ -70,6 +81,9 @@ void GameRenderer::processWindowEvents()
             case sf::Keyboard::Num2:
             case sf::Keyboard::Num4:
                 selected_state = (int)event.key.code - (int)sf::Keyboard::Num1;
+                break;
+            case sf::Keyboard::Tab:
+                mode = (DrawMode)(((int)mode + 1) % 3);
                 break;
             default:
                 break;
@@ -128,6 +142,10 @@ void GameRenderer::mouseClick(int x, int y, sf::Mouse::Button b)
 void GameRenderer::mouseRelease(int x, int y)
 {
     mousePressed = false;
+    if (!posInCanvas(x, y))
+        return;
+
+    sendDrawnObject();
 }
 
 void GameRenderer::guiClick(int x, int y, sf::Mouse::Button b) {}
@@ -141,12 +159,11 @@ void GameRenderer::canvasClick(int x, int y, sf::Mouse::Button b)
     if (!game.grid.isOnGrid(x, y))
         return;
 
-    State s = (State)selected_state;
+    drawnState = (State)selected_state;
     if (b == sf::Mouse::Right)
-        s = State::NONE;
+        drawnState = State::EMPTY;
 
-    // game.grid.setCell(x, y, s);
-    sendCellChanged(x, y, s);
+    drawnObject = {{x, y}, {x, y}};
 }
 
 void GameRenderer::mouseMove(int x, int y)
@@ -154,15 +171,50 @@ void GameRenderer::mouseMove(int x, int y)
     if (!posInCanvas(lastMousePos.x, lastMousePos.y))
         return;
 
-    if (movingView() && mousePressed)
+    if (!mousePressed)
+        return;
+
+    if (movingView())
     {
         float dx = x - lastMousePos.x;
         float dy = y - lastMousePos.y;
         dx *= current_zoom;
         dy *= current_zoom;
         canvas.move(-dx, -dy);
-        lastMousePos = {x, y};
     }
+    else
+    {
+        sf::Vector2f pos = window.mapPixelToCoords(sf::Vector2i(x, y));
+        x = pos.x;
+        y = pos.y;
+        x /= CELL_SIZE;
+        y /= CELL_SIZE;
+        if (!game.grid.isOnGrid(x, y))
+            return;
+        if (mode == DrawMode::DOTS)
+        {
+            State s;
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+                s = (State)selected_state;
+            else if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+                s = State::EMPTY;
+
+            sendCellChanged(x, y, s);
+        }
+        if (mode == DrawMode::RECT)
+        {
+            int x0 = lastMousePos.x;
+            int y0 = lastMousePos.y;
+            sf::Vector2f pos = window.mapPixelToCoords(sf::Vector2i(x0, y0));
+            x0 = pos.x;
+            y0 = pos.y;
+            x0 /= CELL_SIZE;
+            y0 /= CELL_SIZE;
+
+            drawnObject = {{x0, y0}, {x, y}};
+        }
+    }
+    lastMousePos = {x, y};
 }
 
 void GameRenderer::zoom(int x, int y, float z)
@@ -189,12 +241,42 @@ void GameRenderer::drawCanvas()
 {
     window.setView(canvas);
     drawBackground();
+    drawGrid();
+    drawGhosts();
+    drawDrawnObject();
+}
+
+void GameRenderer::drawGrid()
+{
     for (int x = 0; x < 64; x++)
     {
         for (int y = 0; y < 64; y++)
         {
             State s = game.grid.getCell(x, y);
             sf::Color color = COLORS[(int)s];
+            drawCell(x, y, color);
+        }
+    }
+}
+
+sf::Color darken(sf::Color color)
+{
+    int r, g, b;
+    r = color.r;
+    g = color.g;
+    b = color.b;
+    return {r / 2, g / 2, b / 2};
+}
+void GameRenderer::drawGhosts()
+{
+    for (int x = 0; x < 64; x++)
+    {
+        for (int y = 0; y < 64; y++)
+        {
+            State s = ghosts[y * game.grid.getWidth() + x];
+            if (s == State::NONE)
+                continue;
+            sf::Color color = darken(COLORS[(int)s]);
             drawCell(x, y, color);
         }
     }
@@ -207,10 +289,44 @@ void GameRenderer::drawBackground()
     sf::RectangleShape bg;
     bg.setOutlineThickness(4);
     bg.setOutlineColor({255, 255, 255});
-    bg.setFillColor(NONE_COLOR);
+    bg.setFillColor(EMPTY_COLOR);
     bg.setPosition({0, 0});
     bg.setSize({width * CELL_SIZE, height * CELL_SIZE});
     window.draw(bg);
+}
+
+void GameRenderer::drawDrawnObject()
+{
+    if (mode == DrawMode::RECT)
+    {
+        sf::RectangleShape rect;
+        int x, y;
+        x = drawnObject.first.x;
+        y = drawnObject.first.y;
+        int x1, y1;
+        x1 = drawnObject.second.x;
+        y1 = drawnObject.second.y;
+
+        int tmp;
+        if (x > x1)
+        {
+            tmp = x;
+            x = x1;
+            x1 = tmp;
+        }
+        if (y > y1)
+        {
+            tmp = y;
+            y = y1;
+            y1 = tmp;
+        }
+
+        rect.setPosition({x * CELL_SIZE, y * CELL_SIZE});
+        rect.setSize({(x1 - x) * CELL_SIZE - 1, (y1 - y) * CELL_SIZE - 1});
+        rect.setFillColor({200, 200, 200, 200});
+        rect.setOutlineThickness(0);
+        window.draw(rect);
+    }
 }
 
 void GameRenderer::drawCell(int x, int y, sf::Color color)
@@ -219,13 +335,43 @@ void GameRenderer::drawCell(int x, int y, sf::Color color)
     cell.setPosition(x * CELL_SIZE, y * CELL_SIZE);
     cell.setSize(sf::Vector2f(CELL_SIZE - 1, CELL_SIZE - 1));
     cell.setOutlineThickness(0);
-    cell.setOutlineColor(sf::Color(40, 40, 40));
     cell.setFillColor(color);
     window.draw(cell);
 }
 
+void GameRenderer::sendDrawnObject()
+{
+    if (mode == DrawMode::DOTS)
+        return;
+    int x, y;
+    x = drawnObject.first.x;
+    y = drawnObject.first.y;
+    int x1, y1;
+    x1 = drawnObject.second.x;
+    y1 = drawnObject.second.y;
+
+    if (mode == DrawMode::RECT)
+    {
+        
+    }
+
+    if (mode == DrawMode::LINE)
+    {
+    }
+}
+
 void GameRenderer::sendCellChanged(int x, int y, State s)
 {
+    State current_here = game.grid.getCell(x, y);
+    State ghost_here = ghosts[y * game.grid.getWidth() + x];
+    if (s == current_here || s == ghost_here)
+        return;
+
+    //game.grid.setCell(x, y, s);
+    //return;
+
+    ghosts[y * game.grid.getWidth() + x] = s;
+
     NetworkEvent *event = new CellChangedEvent(x, y, s);
     controller.sendEvent(event);
     delete event;

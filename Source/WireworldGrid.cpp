@@ -56,7 +56,7 @@ void WireworldGrid::createGrid(int width, int height)
     this->height = height;
     this->grid = new State[this->width * this->height];
     for (int i = 0; i < this->width * this->height; i++)
-        this->grid[i] = State::NONE;
+        this->grid[i] = State::EMPTY;
 }
 
 void WireworldGrid::freeGrid()
@@ -79,8 +79,8 @@ void WireworldGrid::update()
             State new_state;
             switch (current_state)
             {
-            case State::NONE:
-                new_state = State::NONE;
+            case State::EMPTY:
+                new_state = State::EMPTY;
                 break;
             case State::HEAD:
                 new_state = State::TAIL;
