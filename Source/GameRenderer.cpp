@@ -161,7 +161,8 @@ void GameRenderer::canvasClick(int x, int y, sf::Mouse::Button b)
         drawnState = State::EMPTY;
 
     drawnObject = {{x, y}, {x, y}};
-    sendCellChanged(x, y, drawnState);
+    if (mode == DrawMode::DOTS)
+        sendCellChanged(x, y, drawnState);
 }
 
 void GameRenderer::mouseMove(const int x, const int y)
@@ -266,7 +267,7 @@ sf::Color darken(sf::Color color)
     r = color.r;
     g = color.g;
     b = color.b;
-    return {r / 2, g / 2, b / 2};
+    return {(sf::Uint8)(r / 2), (sf::Uint8)(g / 2), (sf::Uint8)(b / 2)};
 }
 void GameRenderer::drawGhosts()
 {
@@ -292,7 +293,7 @@ void GameRenderer::drawBackground()
     bg.setOutlineColor({255, 255, 255});
     bg.setFillColor(EMPTY_COLOR);
     bg.setPosition({0, 0});
-    bg.setSize({width * CELL_SIZE, height * CELL_SIZE});
+    bg.setSize({(float)width * CELL_SIZE, (float)height * CELL_SIZE});
     window.draw(bg);
 }
 
@@ -320,8 +321,8 @@ void GameRenderer::drawDrawnObject()
         x1 = std::min(x, x1);
         y1 = std::min(y, y1);
 
-        rect.setPosition({x1 * CELL_SIZE, y1 * CELL_SIZE});
-        rect.setSize({(x2 - x1 + 1) * CELL_SIZE - 1, (y2 - y1 + 1) * CELL_SIZE - 1});
+        rect.setPosition({(float)x1 * CELL_SIZE, (float)y1 * CELL_SIZE});
+        rect.setSize({(float)(x2 - x1 + 1) * CELL_SIZE - 1, (float)(y2 - y1 + 1) * CELL_SIZE - 1});
         rect.setFillColor({200, 200, 200, 200});
         rect.setOutlineThickness(0);
         window.draw(rect);
@@ -361,20 +362,12 @@ void GameRenderer::sendDrawnObject()
     if (mode == DrawMode::RECT)
     {
         event = new RectangleChangedEvent(x0, y0, x1, y1, drawnState);
-        for (int x = x0; x <= x1; x++)
-            for (int y = y0; y <= y1; y++)
-            {
-                game.ghosts.setCell(x, y, drawnState);
-            }
+        game.ghosts.setRectangle(x0, y0, x1, y1, drawnState);
     }
     else if (mode == DrawMode::LINE)
     {
         event = new LineChangedEvent(x0, y0, x1, y1, drawnState);
-        auto points = getLine(x0, y0, x1, y1);
-        for (auto point : points)
-        {
-            game.ghosts.setCell(point.x, point.y, drawnState);
-        }
+        game.ghosts.setLine(x0, y0, x1, y1, drawnState);
     }
     drawnObject = {{0, 0}, {0, 0}};
     controller.sendEvent(event);

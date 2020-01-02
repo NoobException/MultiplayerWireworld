@@ -13,8 +13,10 @@ public:
     NetworkEvent *getNextEvent();
     void sendEvent(NetworkEvent *event);
     bool hasNextEvent();
+    void stop();
 
 private:
+    bool running;
     sf::TcpSocket socket;
     void clientLoop();
     sf::Thread clientThread;

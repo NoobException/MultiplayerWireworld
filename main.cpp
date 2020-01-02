@@ -25,5 +25,6 @@ int main()
     ClientNetworkController controller(addr, 25565);
     GameRenderer renderer(game, controller);
     renderer.run();
+    controller.stop();
 #endif
 }

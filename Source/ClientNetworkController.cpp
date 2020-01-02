@@ -4,15 +4,17 @@
 ClientNetworkController::ClientNetworkController(sf::IpAddress address, int port) : clientThread(&clientLoop, this)
 {
     socket.connect(address, port);
+    running = true;
     clientThread.launch();
 }
 
 void ClientNetworkController::clientLoop()
 {
-    while (true)
+    while (running)
     {
         sf::Packet data;
-        if (socket.receive(data) == sf::Socket::Done)
+        sf::Socket::Status status = socket.receive(data);
+        if (status == sf::Socket::Done)
         {
             NetworkEvent *event = NetworkEventFactory::newNetworkEvent(data);
             queueMutex.lock();
@@ -26,6 +28,11 @@ void ClientNetworkController::sendEvent(NetworkEvent *event)
 {
     sf::Packet packet = event->toPacket();
     socket.send(packet);
+}
+void ClientNetworkController::stop()
+{
+    running = false;
+    socket.disconnect();
 }
 
 bool ClientNetworkController::hasNextEvent()

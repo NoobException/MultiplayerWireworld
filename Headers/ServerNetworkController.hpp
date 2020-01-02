@@ -13,14 +13,15 @@ public:
     ServerNetworkController(int port, Game &game);
     NetworkEvent *getNextEvent();
     bool hasNextEvent();
-    void sendEvent(NetworkEvent* event);
+    void sendEvent(NetworkEvent *event);
     sf::Mutex gameMutex;
 
 private:
+    void serverLoop();
+    void removeDisconnectedSockets();
     std::list<sf::TcpSocket *> clients;
     sf::SocketSelector selector;
     sf::TcpListener listener;
-    void serverLoop();
     sf::Thread serverThread;
     sf::Mutex queueMutex;
     sf::Mutex sendMutex;

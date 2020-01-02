@@ -1,5 +1,6 @@
 #include "WireworldGrid.hpp"
 #include "GridInterface.hpp"
+#include "Utils.hpp"
 
 #include <string>
 #include <iostream>
@@ -123,7 +124,20 @@ void WireworldGrid::setCell(int x, int y, State state)
         throw InvalidGridCoordinatesException(x, y, this->width, this->height);
     this->grid[y * this->width + x] = state;
 }
-
+void WireworldGrid::setLine(int x1, int y1, int x2, int y2, State state)
+{
+    std::vector<sf::Vector2i> points = getLine(x1, y1, x2, y2);
+    for (sf::Vector2i point : points)
+    {
+        setCell(point.x, point.y, state);
+    }
+}
+void WireworldGrid::setRectangle(int x1, int y1, int x2, int y2, State state)
+{
+    for (int x = x1; x <= x2; x++)
+        for (int y = y1; y <= y2; y++)
+            setCell(x, y, state);
+}
 State WireworldGrid::getCell(int x, int y)
 {
     if (x < 0 || x >= this->width || y < 0 || y >= this->height)

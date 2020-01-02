@@ -38,11 +38,13 @@ public:
     WireworldGrid(const WireworldGrid &other);
     virtual ~WireworldGrid();
 
-    const WireworldGrid& operator=(const WireworldGrid&);
+    const WireworldGrid &operator=(const WireworldGrid &);
 
     virtual void update() override;
 
     virtual void setCell(int x, int y, State state) override;
+    void setLine(int x1, int y1, int x2, int y2, State state);
+    void setRectangle(int x1, int y1, int x2, int y2, State state);
     virtual State getCell(int x, int y);
     bool isOnGrid(int x, int y);
     int getWidth();
