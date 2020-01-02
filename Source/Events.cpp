@@ -1,4 +1,4 @@
-#include "NetworkEvents/Events.hpp"
+#include "Networking/NetworkEvents/Events.hpp"
 #include "Utils.hpp"
 CellChangedEvent::CellChangedEvent(int x, int y, State state)
 {

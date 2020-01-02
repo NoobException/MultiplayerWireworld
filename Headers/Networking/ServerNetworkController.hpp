@@ -5,19 +5,20 @@
 #include <list>
 #include <SFML/System.hpp>
 #include <SFML/Network.hpp>
-#include "NetworkEvents/Events.hpp"
+#include "Networking/NetworkEvents/Events.hpp"
+#include "Networking/NetworkController.hpp"
 
-class ServerNetworkController
+class ServerNetworkController : NetworkController
 {
 public:
     ServerNetworkController(int port, Game &game);
-    NetworkEvent *getNextEvent();
-    bool hasNextEvent();
-    void sendEvent(NetworkEvent *event);
+    virtual NetworkEvent *getNextEvent() override;
+    virtual bool hasNextEvent() override;
+    virtual void sendEvent(NetworkEvent *event) override;
     sf::Mutex gameMutex;
 
 private:
-    void serverLoop();
+    virtual void controllerLoop() override;
     void removeDisconnectedSockets();
     std::list<sf::TcpSocket *> clients;
     sf::SocketSelector selector;

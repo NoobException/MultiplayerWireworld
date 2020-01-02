@@ -6,7 +6,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Game.hpp"
-#include "ClientNetworkController.hpp"
+#include "Networking/ClientNetworkController.hpp"
 
 enum DrawMode
 {DOTS, LINE, RECT};
@@ -15,7 +15,6 @@ class GameRenderer
 {
 public:
     GameRenderer(Game &game, ClientNetworkController &controller);
-    ~GameRenderer();
     void run();
 
 private:
@@ -54,6 +53,8 @@ private:
     State drawnState;
     std::pair<sf::Vector2i, sf::Vector2i> drawnObject;
 
+    void displayCurrentMode();
+    
     void draw();
     void drawCanvas();
     void drawBackground();

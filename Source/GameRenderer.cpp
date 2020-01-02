@@ -4,15 +4,17 @@
 #include "GameRenderer.hpp"
 #include "Utils.hpp"
 
-GameRenderer::GameRenderer(Game &game, ClientNetworkController &controller) : canvas(sf::FloatRect({0.0, 0.0},
-                                                                                                   (sf::Vector2f)CANVAS_SIZE)),
-                                                                              window(
-                                                                                  sf::VideoMode(WINDOW_SIZE.x, WINDOW_SIZE.y),
-                                                                                  "Wireworld Client",
-                                                                                  sf::Style::Close | sf::Style::Titlebar),
-                                                                              game(game),
-                                                                              running(true),
-                                                                              controller(controller)
+GameRenderer::GameRenderer(
+    Game &game,
+    ClientNetworkController &controller) : canvas(sf::FloatRect({0.0, 0.0},
+                                                                (sf::Vector2f)CANVAS_SIZE)),
+                                           window(
+                                               sf::VideoMode(WINDOW_SIZE.x, WINDOW_SIZE.y),
+                                               "Wireworld Client",
+                                               sf::Style::Close | sf::Style::Titlebar),
+                                           game(game),
+                                           running(true),
+                                           controller(controller)
 {
     canvas.setViewport(sf::FloatRect(CANVAS_POS.x / WINDOW_SIZE.x,
                                      CANVAS_POS.y / WINDOW_SIZE.y,
@@ -21,26 +23,24 @@ GameRenderer::GameRenderer(Game &game, ClientNetworkController &controller) : ca
     window.setFramerateLimit(60);
 }
 
-GameRenderer::~GameRenderer()
-{
-}
-
 void GameRenderer::run()
 {
-    sf::Clock clock;
     while (running && window.isOpen())
     {
-
         processWindowEvents();
         processNetworkEvents();
+        displayCurrentMode();
         draw();
-
-        std::string colors[4] = {"Empty", "Conductor", "Tail", "Head"};
-        std::string modes[3] = {"Dots", "Lines", "Rectangles"};
-        std::string color = colors[selected_state];
-        std::string m = modes[(int)mode];
-        window.setTitle("Wireworld. " + color + " " + m);
     }
+}
+
+void GameRenderer::displayCurrentMode()
+{
+    std::string colors[4] = {"Empty", "Conductor", "Tail", "Head"};
+    std::string modes[3] = {"Dots", "Lines", "Rectangles"};
+    std::string color = colors[selected_state];
+    std::string m = modes[(int)mode];
+    window.setTitle("Wireworld. " + color + " " + m);
 }
 
 void GameRenderer::processWindowEvents()
@@ -299,7 +299,7 @@ void GameRenderer::drawBackground()
 
 void GameRenderer::drawDrawnObject()
 {
-    if (mousePressed == false)
+    if (mousePressed == false && !movingView())
         return;
 
     if (mode == DrawMode::DOTS)

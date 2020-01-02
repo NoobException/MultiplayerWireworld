@@ -4,21 +4,22 @@
 #include <queue>
 #include <SFML/System.hpp>
 #include <SFML/Network.hpp>
-#include "NetworkEvents/Events.hpp"
+#include "Networking/NetworkEvents/Events.hpp"
+#include "Networking/NetworkController.hpp"
 
-class ClientNetworkController
+class ClientNetworkController : NetworkController
 {
 public:
     ClientNetworkController(sf::IpAddress address, int port);
     NetworkEvent *getNextEvent();
-    void sendEvent(NetworkEvent *event);
-    bool hasNextEvent();
-    void stop();
+    virtual void sendEvent(NetworkEvent *event) override;
+    virtual bool hasNextEvent() override;
+    virtual void stop() override;
 
 private:
     bool running;
     sf::TcpSocket socket;
-    void clientLoop();
+    virtual void controllerLoop() override;
     sf::Thread clientThread;
     sf::Mutex queueMutex;
     std::queue<NetworkEvent *> events;

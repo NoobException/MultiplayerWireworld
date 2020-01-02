@@ -1,14 +1,16 @@
-#include "ClientNetworkController.hpp"
-#include "NetworkEventFactory.hpp"
+#include "Networking/ClientNetworkController.hpp"
+#include "Networking/NetworkEventFactory.hpp"
 
-ClientNetworkController::ClientNetworkController(sf::IpAddress address, int port) : clientThread(&clientLoop, this)
+ClientNetworkController::ClientNetworkController(
+    sf::IpAddress address,
+    int port) : clientThread(&controllerLoop, this)
 {
     socket.connect(address, port);
     running = true;
     clientThread.launch();
 }
 
-void ClientNetworkController::clientLoop()
+void ClientNetworkController::controllerLoop()
 {
     while (running)
     {

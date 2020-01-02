@@ -1,4 +1,4 @@
-#include "NetworkEventFactory.hpp"
+#include "Networking/NetworkEventFactory.hpp"
 
 NetworkEvent *NetworkEventFactory::newNetworkEvent(sf::Packet &data)
 {

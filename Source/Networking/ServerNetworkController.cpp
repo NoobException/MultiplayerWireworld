@@ -1,16 +1,16 @@
-#include "ServerNetworkController.hpp"
-#include "NetworkEventFactory.hpp"
+#include "Networking/ServerNetworkController.hpp"
+#include "Networking/NetworkEventFactory.hpp"
 #include "Game.hpp"
 #include <iostream>
 
-ServerNetworkController::ServerNetworkController(int port, Game &game) : serverThread(&serverLoop, this), game(game)
+ServerNetworkController::ServerNetworkController(int port, Game &game) : serverThread(&controllerLoop, this), game(game)
 {
     listener.listen(port);
     selector.add(listener);
     serverThread.launch();
 }
 
-void ServerNetworkController::serverLoop()
+void ServerNetworkController::controllerLoop()
 {
     while (true)
     {

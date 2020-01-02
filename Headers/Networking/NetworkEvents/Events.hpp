@@ -3,7 +3,7 @@
 
 #include <SFML/Network.hpp>
 #include "WireworldGrid.hpp"
-#include "NetworkEvents/NetworkEvent.hpp"
+#include "Networking/NetworkEvents/NetworkEvent.hpp"
 
 class CellChangedEvent : public NetworkEvent
 {
