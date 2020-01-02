@@ -15,6 +15,7 @@ public:
     virtual NetworkEvent *getNextEvent() override;
     virtual bool hasNextEvent() override;
     virtual void sendEvent(NetworkEvent *event) override;
+    virtual void stop() override{};
     sf::Mutex gameMutex;
 
 private:

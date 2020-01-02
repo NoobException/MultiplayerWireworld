@@ -1,6 +1,11 @@
 
 #include "ServerGameController.hpp"
 
+ServerGameController::ServerGameController(
+    Game &game,
+    ServerNetworkController &networkController) : game(game), 
+    networkController(networkController)
+{}
 void ServerGameController::run()
 {
     while (true)

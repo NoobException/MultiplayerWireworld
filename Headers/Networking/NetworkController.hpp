@@ -5,6 +5,7 @@
 
 class NetworkController
 {
+public:
     virtual void controllerLoop() = 0;
     virtual bool hasNextEvent() = 0;
     virtual NetworkEvent *getNextEvent() = 0;
