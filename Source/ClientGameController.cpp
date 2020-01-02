@@ -12,11 +12,12 @@ ClientGameController::ClientGameController(
 void ClientGameController::run()
 {
     gameRenderer.run();
+    /*
     while (gameRenderer.isRunning())
     {
         processWindowEvents();
         processNetworkEvents();
         displayCurrentMode();
         draw();
-    }
+    }*/
 }
