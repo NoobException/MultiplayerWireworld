@@ -31,8 +31,8 @@ void Game::setRectangle(int x1, int y1, int x2, int y2, State state)
 
 void Game::clearWires()
 {
-    for (int x = 0; x < width; x++)
-        for (int y = 0; y < height; y++)
+    for (int x = 0; x < grid.getWidth(); x++)
+        for (int y = 0; y < grid.getHeight(); y++)
         {
             if (grid.getCell(x, y) == State::HEAD || grid.getCell(x, y) == State::TAIL)
             {
