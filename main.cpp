@@ -7,7 +7,7 @@
 int main()
 {
 #ifdef SERVER
-    Game game;
+    Game game(64, 64);
     ServerNetworkController controller(25565, game);
     while (true)
     {
@@ -20,7 +20,7 @@ int main()
         }
     }
 #else
-    Game game;
+    Game game(64, 64);
     sf::IpAddress addr("retardcraft.ddns.net");
     ClientNetworkController controller(addr, 25565);
     GameRenderer renderer(game, controller);

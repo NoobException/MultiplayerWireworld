@@ -19,6 +19,7 @@ CellChangedEvent::CellChangedEvent(sf::Packet &data)
 void CellChangedEvent::apply(Game &game)
 {
     game.grid.setCell(x, y, state);
+    game.ghosts.setCell(x, y, State::NONE);
 }
 
 Type CellChangedEvent::getType()
@@ -70,6 +71,7 @@ NewPlayerEvent::NewPlayerEvent(sf::Packet &data) : width(getIntFromPacket(data))
                 data >> currentByte;
             }
             grid.setCell(x, y, (State)state);
+            
         }
     }
 }
@@ -149,7 +151,10 @@ void RectangleChangedEvent::apply(Game &game)
 {
     for (int x = x1; x <= x2; x++)
         for (int y = y1; y <= y2; y++)
+        {
             game.grid.setCell(x, y, state);
+            game.ghosts.setCell(x, y, State::NONE);
+        }
 }
 
 Type RectangleChangedEvent::getType()
@@ -193,7 +198,10 @@ void LineChangedEvent::apply(Game &game)
 {
     std::vector<sf::Vector2i> points = getLine(x1, y1, x2, y2);
     for (sf::Vector2i point : points)
+    {
         game.grid.setCell(point.x, point.y, state);
+        game.ghosts.setCell(point.x, point.y, State::NONE);
+    }
 }
 
 Type LineChangedEvent::getType()
@@ -204,7 +212,7 @@ Type LineChangedEvent::getType()
 sf::Packet LineChangedEvent::toPacket()
 {
     sf::Packet packet;
-    packet << (unsigned char)RECTANGLE_CHANGED;
+    packet << (unsigned char)LINE_CHANGED;
     packet << this->x1;
     packet << this->y1;
     packet << this->x2;

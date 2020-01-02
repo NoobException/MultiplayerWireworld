@@ -11,12 +11,16 @@ WireworldGrid::WireworldGrid(int width, int height) : grid(nullptr), width(0), h
 
 WireworldGrid::WireworldGrid(const WireworldGrid &other) : WireworldGrid(other.width, other.height)
 {
+    if (this->width != other.width || this->height != other.height)
+        throw InvalidGridDimensionsException(width, height);
     for (int i = 0; i < other.width * other.height; i++)
         this->grid[i] = other.grid[i];
 }
 
 const WireworldGrid &WireworldGrid::operator=(const WireworldGrid &other)
 {
+    if (this->width != other.width || this->height != other.height)
+        throw InvalidGridDimensionsException(width, height);
     for (int i = 0; i < other.width * other.height; i++)
         this->grid[i] = other.grid[i];
     return other;

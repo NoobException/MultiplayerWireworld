@@ -35,8 +35,6 @@ private:
                                  TAIL_COLOR,
                                  HEAD_COLOR};
 
-    State *ghosts;
-
     ClientNetworkController &controller;
 
     sf::View canvas;
@@ -79,7 +77,7 @@ private:
     void mouseRelease(int x, int y);
     void guiClick(int x, int y, sf::Mouse::Button);
     void canvasClick(int x, int y, sf::Mouse::Button);
-    void mouseMove(int x, int y);
+    void mouseMove(const int x, const int y);
     void zoom(int x, int y, float z);
 
     void sendDrawnObject();

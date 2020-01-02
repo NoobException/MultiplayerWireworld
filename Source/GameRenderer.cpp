@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "GameRenderer.hpp"
+#include "Utils.hpp"
 
 GameRenderer::GameRenderer(Game &game, ClientNetworkController &controller) : canvas(sf::FloatRect({0.0, 0.0},
                                                                                                    (sf::Vector2f)CANVAS_SIZE)),
@@ -18,13 +19,6 @@ GameRenderer::GameRenderer(Game &game, ClientNetworkController &controller) : ca
                                      CANVAS_SIZE.x / WINDOW_SIZE.x,
                                      CANVAS_SIZE.y / WINDOW_SIZE.y));
     window.setFramerateLimit(60);
-    int width = game.grid.getWidth();
-    int height = game.grid.getHeight();
-    ghosts = new State[width * height];
-    for (int i = 0; i < width * height; i++)
-    {
-        ghosts[i] = State::NONE;
-    }
 }
 
 GameRenderer::~GameRenderer()
@@ -166,7 +160,7 @@ void GameRenderer::canvasClick(int x, int y, sf::Mouse::Button b)
     drawnObject = {{x, y}, {x, y}};
 }
 
-void GameRenderer::mouseMove(int x, int y)
+void GameRenderer::mouseMove(const int x, const int y)
 {
     if (!posInCanvas(lastMousePos.x, lastMousePos.y))
         return;
@@ -185,11 +179,12 @@ void GameRenderer::mouseMove(int x, int y)
     else
     {
         sf::Vector2f pos = window.mapPixelToCoords(sf::Vector2i(x, y));
-        x = pos.x;
-        y = pos.y;
-        x /= CELL_SIZE;
-        y /= CELL_SIZE;
-        if (!game.grid.isOnGrid(x, y))
+        int x1, y1;
+        x1 = pos.x;
+        y1 = pos.y;
+        x1 /= CELL_SIZE;
+        y1 /= CELL_SIZE;
+        if (!game.grid.isOnGrid(x1, y1))
             return;
         if (mode == DrawMode::DOTS)
         {
@@ -199,9 +194,9 @@ void GameRenderer::mouseMove(int x, int y)
             else if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
                 s = State::EMPTY;
 
-            sendCellChanged(x, y, s);
+            sendCellChanged(x1, y1, s);
         }
-        if (mode == DrawMode::RECT)
+        else
         {
             int x0 = lastMousePos.x;
             int y0 = lastMousePos.y;
@@ -210,8 +205,10 @@ void GameRenderer::mouseMove(int x, int y)
             y0 = pos.y;
             x0 /= CELL_SIZE;
             y0 /= CELL_SIZE;
+            x1 = drawnObject.first.x;
+            y1 = drawnObject.first.y;
 
-            drawnObject = {{x0, y0}, {x, y}};
+            drawnObject = {{x1, y1}, {x0, y0}};
         }
     }
     lastMousePos = {x, y};
@@ -273,7 +270,7 @@ void GameRenderer::drawGhosts()
     {
         for (int y = 0; y < 64; y++)
         {
-            State s = ghosts[y * game.grid.getWidth() + x];
+            State s = game.ghosts.getCell(x, y);
             if (s == State::NONE)
                 continue;
             sf::Color color = darken(COLORS[(int)s]);
@@ -297,35 +294,35 @@ void GameRenderer::drawBackground()
 
 void GameRenderer::drawDrawnObject()
 {
+    int x, y;
+    x = drawnObject.first.x;
+    y = drawnObject.first.y;
+    int x1, y1;
+    x1 = drawnObject.second.x;
+    y1 = drawnObject.second.y;
     if (mode == DrawMode::RECT)
     {
         sf::RectangleShape rect;
-        int x, y;
-        x = drawnObject.first.x;
-        y = drawnObject.first.y;
-        int x1, y1;
-        x1 = drawnObject.second.x;
-        y1 = drawnObject.second.y;
 
-        int tmp;
-        if (x > x1)
-        {
-            tmp = x;
-            x = x1;
-            x1 = tmp;
-        }
-        if (y > y1)
-        {
-            tmp = y;
-            y = y1;
-            y1 = tmp;
-        }
+        int x2, y2;
+        x2 = std::max(x, x1);
+        y2 = std::max(y, y1);
+        x1 = std::min(x, x1);
+        y1 = std::min(y, y1);
 
-        rect.setPosition({x * CELL_SIZE, y * CELL_SIZE});
-        rect.setSize({(x1 - x) * CELL_SIZE - 1, (y1 - y) * CELL_SIZE - 1});
+        rect.setPosition({x1 * CELL_SIZE, y1 * CELL_SIZE});
+        rect.setSize({(x2 - x1 + 1) * CELL_SIZE - 1, (y2 - y1 + 1) * CELL_SIZE - 1});
         rect.setFillColor({200, 200, 200, 200});
         rect.setOutlineThickness(0);
         window.draw(rect);
+    }
+    else if (mode == DrawMode::LINE)
+    {
+        auto points = getLine(x, y, x1, y1);
+        for (auto point : points)
+        {
+            drawCell(point.x, point.y, {200, 200, 200, 200});
+        }
     }
 }
 
@@ -343,34 +340,48 @@ void GameRenderer::sendDrawnObject()
 {
     if (mode == DrawMode::DOTS)
         return;
-    int x, y;
-    x = drawnObject.first.x;
-    y = drawnObject.first.y;
+    int x0, y0;
+    x0 = drawnObject.first.x;
+    y0 = drawnObject.first.y;
     int x1, y1;
     x1 = drawnObject.second.x;
     y1 = drawnObject.second.y;
 
+    NetworkEvent *event;
     if (mode == DrawMode::RECT)
     {
-        
+        event = new RectangleChangedEvent(x0, y0, x1, y1, drawnState);
+        for (int x = x0; x <= x1; x++)
+            for (int y = y0; y <= y1; y++)
+            {
+                game.ghosts.setCell(x, y, drawnState);
+            }
     }
-
-    if (mode == DrawMode::LINE)
+    else if (mode == DrawMode::LINE)
     {
+        event = new LineChangedEvent(x0, y0, x1, y1, drawnState);
+        auto points = getLine(x0, y0, x1, y1);
+        for (auto point : points)
+        {
+            game.ghosts.setCell(point.x, point.y, drawnState);
+        }
     }
+    drawnObject = {{0, 0}, {0, 0}};
+    controller.sendEvent(event);
+    delete event;
 }
 
 void GameRenderer::sendCellChanged(int x, int y, State s)
 {
     State current_here = game.grid.getCell(x, y);
-    State ghost_here = ghosts[y * game.grid.getWidth() + x];
+    State ghost_here = game.ghosts.getCell(x, y);
     if (s == current_here || s == ghost_here)
         return;
 
     //game.grid.setCell(x, y, s);
     //return;
 
-    ghosts[y * game.grid.getWidth() + x] = s;
+    game.ghosts.setCell(x, y, s);
 
     NetworkEvent *event = new CellChangedEvent(x, y, s);
     controller.sendEvent(event);

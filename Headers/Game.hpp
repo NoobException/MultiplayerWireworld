@@ -14,10 +14,11 @@ class Game
     friend class LineChangedEvent;
 
 public:
-    Game();
+    Game(int width, int height);
 
 private:
     WireworldGrid grid;
+    WireworldGrid ghosts;
 };
 
 #endif // GAME_H
