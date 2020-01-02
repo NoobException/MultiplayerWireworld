@@ -41,7 +41,7 @@ private:
 
     sf::View canvas;
     sf::View HUD;
-    
+
     sf::RenderWindow window;
     Game &game;
     bool running;
@@ -86,4 +86,3 @@ private:
     void sendCellChanged(int x, int y, State state);
 };
 #endif // GAME_RENDERER_HPP
-

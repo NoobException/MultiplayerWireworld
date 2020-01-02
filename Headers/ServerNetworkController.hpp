@@ -13,6 +13,7 @@ public:
     ServerNetworkController(int port, Game &game);
     NetworkEvent *getNextEvent();
     bool hasNextEvent();
+    void sendEvent(NetworkEvent* event);
     sf::Mutex gameMutex;
 
 private:
@@ -22,6 +23,7 @@ private:
     void serverLoop();
     sf::Thread serverThread;
     sf::Mutex queueMutex;
+    sf::Mutex sendMutex;
     std::queue<NetworkEvent *> events;
     Game &game;
 };
