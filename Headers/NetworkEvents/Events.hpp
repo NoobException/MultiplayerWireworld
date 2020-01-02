@@ -42,4 +42,31 @@ public:
     sf::Packet toPacket() override;
     void apply(Game &game) override;
 };
+class RectangleChangedEvent : public NetworkEvent
+{
+public:
+    RectangleChangedEvent(int x1, int y1, int x2, int y2, State state);
+    RectangleChangedEvent(sf::Packet &data);
+    Type getType() override;
+    sf::Packet toPacket() override;
+    void apply(Game &game) override;
+
+private:
+    int x1, y1, x2, y2;
+    State state;
+};
+class LineChangedEvent : public NetworkEvent
+{
+public:
+    LineChangedEvent(int x1, int y1, int x2, int y2, State state);
+    LineChangedEvent(sf::Packet &data);
+    Type getType() override;
+    sf::Packet toPacket() override;
+    void apply(Game &game) override;
+
+private:
+    int x1, y1, x2, y2;
+    State state;
+};
+
 #endif

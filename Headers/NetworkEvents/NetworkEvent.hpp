@@ -7,6 +7,8 @@ enum Type
 {
     NEW_CLIENT,
     CELL_CHANGED,
+    RECTANGLE_CHANGED,
+    LINE_CHANGED,
     ADVANCE_SIMULATION
 };
 class NetworkEvent

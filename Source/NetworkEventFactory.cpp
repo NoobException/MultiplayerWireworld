@@ -6,10 +6,15 @@ NetworkEvent *NetworkEventFactory::newNetworkEvent(sf::Packet &data)
     data >> type;
     switch (type)
     {
-    case CELL_CHANGED:
-        return new CellChangedEvent(data);
+
     case NEW_CLIENT:
         return new NewPlayerEvent(data);
+    case CELL_CHANGED:
+        return new CellChangedEvent(data);
+    case RECTANGLE_CHANGED:
+        return new RectangleChangedEvent(data);
+    case LINE_CHANGED:
+        return new LineChangedEvent(data);
     case ADVANCE_SIMULATION:
         return new AdvanceSimulationEvent(data);
     }

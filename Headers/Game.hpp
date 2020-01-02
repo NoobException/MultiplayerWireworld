@@ -10,6 +10,8 @@ class Game
     friend class NewPlayerEvent;
     friend class CellChangedEvent;
     friend class AdvanceSimulationEvent;
+    friend class RectangleChangedEvent;
+    friend class LineChangedEvent;
 
 public:
     Game();
