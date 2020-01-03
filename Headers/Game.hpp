@@ -5,7 +5,9 @@
 
 class Game
 {
+    friend class ClientGameController;
     friend class GameRenderer;
+    friend class DrawingController;
     friend class ServerNetworkController;
     friend class NewPlayerEvent;
     friend class CellChangedEvent;

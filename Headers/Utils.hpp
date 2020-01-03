@@ -2,7 +2,8 @@
 #define UTILS_HPP
 
 #include <vector>
-#include <SFML/System.hpp>
+#include <SFML/Graphics.hpp>
+
 static std::vector<sf::Vector2i> getLine(int x1, int y1, int x2, int y2)
 {
     std::vector<sf::Vector2i> ans;
@@ -72,6 +73,15 @@ static std::vector<sf::Vector2i> getLine(int x1, int y1, int x2, int y2)
         }
     }
     return ans;
+}
+
+static sf::Color darken(sf::Color color)
+{
+    int r, g, b;
+    r = color.r;
+    g = color.g;
+    b = color.b;
+    return {(sf::Uint8)(r / 2), (sf::Uint8)(g / 2), (sf::Uint8)(b / 2)};
 }
 
 #endif
