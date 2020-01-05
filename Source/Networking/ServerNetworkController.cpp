@@ -18,54 +18,11 @@ void ServerNetworkController::controllerLoop()
         {
             if (selector.isReady(listener))
             {
-                sf::TcpSocket *client = new sf::TcpSocket;
-                if (listener.accept(*client) == sf::Socket::Done)
-                {
-                    std::cout << "Henlo" << std::endl;
-                    clients.push_back(client);
-                    selector.add(*client);
-                    gameMutex.lock();
-                    NewPlayerEvent event(game.grid);
-                    gameMutex.unlock();
-                    sf::Packet packet = event.toPacket();
-                    sendMutex.lock();
-                    client->send(packet);
-                    sendMutex.unlock();
-                }
-                else
-                {
-                    delete client;
-                }
+                acceptNewClient();
             }
             else
             {
-                for (std::list<sf::TcpSocket *>::iterator it = clients.begin(); it != clients.end(); ++it)
-                {
-                    sf::TcpSocket &client = **it;
-                    if (selector.isReady(client))
-                    {
-                        sf::Packet packet;
-                        sf::Socket::Status status = client.receive(packet);
-                        if (status == sf::Socket::Done)
-                        {
-                            NetworkEvent *event = NetworkEventFactory::newNetworkEvent(packet);
-                            queueMutex.lock();
-                            events.push(event);
-                            queueMutex.unlock();
-                            sendMutex.lock();
-                            for (sf::TcpSocket *recepient : clients)
-                                recepient->send(packet);
-                            sendMutex.unlock();
-                        }
-                        else if (status == sf::Socket::Disconnected)
-                        {
-                            std::cout << "Bye" << std::endl;
-                            selector.remove(client);
-                            delete *it;
-                            it = clients.erase(it);
-                        }
-                    }
-                }
+                processClients();
             }
         }
     }
@@ -91,5 +48,61 @@ void ServerNetworkController::sendEvent(NetworkEvent *event)
     sendMutex.lock();
     for (sf::TcpSocket *recepient : clients)
         recepient->send(packet);
+    sendMutex.unlock();
+}
+
+void ServerNetworkController::acceptNewClient()
+{
+    sf::TcpSocket *client = new sf::TcpSocket;
+    if (listener.accept(*client) == sf::Socket::Done)
+    {
+        std::cout << "Henlo" << std::endl;
+        clients.push_back(client);
+        selector.add(*client);
+        gameMutex.lock();
+        NewPlayerEvent event(game.grid);
+        gameMutex.unlock();
+        sf::Packet packet = event.toPacket();
+        sendPacket(client, packet);
+    }
+    else
+    {
+        delete client;
+    }
+}
+
+void ServerNetworkController::processClients()
+{
+    for (auto it = clients.begin(); it != clients.end();)
+    {
+        sf::TcpSocket &client = **it;
+        if (!selector.isReady(client))
+            continue;
+
+        sf::Packet packet;
+        sf::Socket::Status status = client.receive(packet);
+        if (status == sf::Socket::Done)
+        {
+            NetworkEvent *event = NetworkEventFactory::newNetworkEvent(packet);
+            queueMutex.lock();
+            events.push(event);
+            queueMutex.unlock();
+            for (sf::TcpSocket *recipient : clients)
+                sendPacket(recipient, packet);
+        }
+        else if (status == sf::Socket::Disconnected)
+        {
+            std::cout << "Bye" << std::endl;
+            selector.remove(client);
+            delete *it;
+            it = clients.erase(it);
+        }
+    }
+}
+
+void ServerNetworkController::sendPacket(sf::TcpSocket *client, sf::Packet &packet)
+{
+    sendMutex.lock();
+    client->send(packet);
     sendMutex.unlock();
 }

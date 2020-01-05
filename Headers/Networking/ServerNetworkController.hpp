@@ -12,15 +12,19 @@ class ServerNetworkController : NetworkController
 {
 public:
     ServerNetworkController(int port, Game &game);
-    virtual NetworkEvent *getNextEvent() override;
-    virtual bool hasNextEvent() override;
-    virtual void sendEvent(NetworkEvent *event) override;
-    virtual void stop() override{};
+    NetworkEvent *getNextEvent() override;
+    bool hasNextEvent() override;
+    void sendEvent(NetworkEvent *event) override;
+    void stop() override{};
     sf::Mutex gameMutex;
 
 private:
-    virtual void controllerLoop() override;
+    void controllerLoop() override;
     void removeDisconnectedSockets();
+    void acceptNewClient();
+    void processClients();
+    void sendPacket(sf::TcpSocket *client, sf::Packet &packet);
+
     std::list<sf::TcpSocket *> clients;
     sf::SocketSelector selector;
     sf::TcpListener listener;
