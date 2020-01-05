@@ -15,7 +15,8 @@ int main()
     ServerNetworkController networkController(25565, game);
     ServerGameController gameController(game, networkController);
 #else
-    std::string address; std::cin>>address;
+    std::string address;
+    std::cin >> address;
     sf::IpAddress addr(address);
     ClientNetworkController networkController(addr, 25565);
     ClientGameController gameController(game, networkController);

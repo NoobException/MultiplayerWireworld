@@ -89,6 +89,7 @@ void ServerNetworkController::processClients()
             queueMutex.unlock();
             for (sf::TcpSocket *recipient : clients)
                 sendPacket(recipient, packet);
+            it++;
         }
         else if (status == sf::Socket::Disconnected)
         {
