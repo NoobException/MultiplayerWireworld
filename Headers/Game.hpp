@@ -1,7 +1,6 @@
 #ifndef GAME_H
 #define GAME_H
 
-
 #include "WireworldGrid.hpp"
 
 class Game
@@ -24,6 +23,7 @@ public:
     Game(int width, int height);
 
 private:
+
     WireworldGrid grid;
     WireworldGrid ghosts;
 };
