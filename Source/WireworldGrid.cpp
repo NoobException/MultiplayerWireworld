@@ -1,9 +1,11 @@
+#include <string>
+#include <iostream>
+
 #include "WireworldGrid.hpp"
 #include "GridInterface.hpp"
 #include "Utils.hpp"
 
-#include <string>
-#include <iostream>
+#include "Grid.hpp"
 
 WireworldGrid::WireworldGrid(int width, int height) : grid(nullptr), width(0), height(0)
 {
@@ -32,25 +34,6 @@ WireworldGrid::~WireworldGrid()
     this->freeGrid();
 }
 
-InvalidGridDimensionsException::InvalidGridDimensionsException(int width, int height) : width(width), height(height)
-{
-}
-
-const char *InvalidGridDimensionsException::what() const noexcept
-{
-    const std::string errorMessage = "Cannot create a grid of size " + std::to_string(width) + " x " + std::to_string(height);
-    return errorMessage.c_str();
-}
-
-InvalidGridCoordinatesException::InvalidGridCoordinatesException(int x, int y, int width, int height) : x(x), y(y), width(width), height(height)
-{
-}
-
-const char *InvalidGridCoordinatesException::what() const noexcept
-{
-    const std::string errorMessage = "Cordinates (" + std::to_string(x) + ", " + std::to_string(y) + ") are not valid on a grid of size " + std::to_string(width) + " x " + std::to_string(height);
-    return errorMessage.c_str();
-}
 
 void WireworldGrid::createGrid(int width, int height)
 {

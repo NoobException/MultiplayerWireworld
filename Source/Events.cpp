@@ -18,8 +18,8 @@ CellChangedEvent::CellChangedEvent(sf::Packet &data)
 
 void CellChangedEvent::apply(Game &game)
 {
-    game.grid.setCell(x, y, state);
-    game.ghosts.setCell(x, y, State::NONE);
+    //game.grid_controller->set_cell(x, y, state);
+    //game.ghosts_controller->set_cell(x, y, State::NONE);
 }
 
 Type CellChangedEvent::getType()
@@ -44,7 +44,7 @@ NewPlayerEvent::NewPlayerEvent(WireworldGrid grid) : grid(grid)
 }
 void NewPlayerEvent::apply(Game &game)
 {
-    game.grid = grid;
+    // game.grid = grid;
 }
 
 int getIntFromPacket(sf::Packet &data)
@@ -122,7 +122,7 @@ sf::Packet AdvanceSimulationEvent::toPacket()
 };
 void AdvanceSimulationEvent::apply(Game &game)
 {
-    game.grid.update();
+   // game.grid.update();
 };
 
 RectangleChangedEvent::RectangleChangedEvent(int x1, int y1, int x2, int y2, State state)
@@ -148,7 +148,7 @@ RectangleChangedEvent::RectangleChangedEvent(sf::Packet &data)
 
 void RectangleChangedEvent::apply(Game &game)
 {
-    game.setRectangle(x1, y1, x2, y2, state);
+    // game.setRectangle(x1, y1, x2, y2, state);
 }
 
 Type RectangleChangedEvent::getType()
@@ -190,7 +190,7 @@ LineChangedEvent::LineChangedEvent(sf::Packet &data)
 
 void LineChangedEvent::apply(Game &game)
 {
-    game.setLine(x1, y1, x2, y2, state);
+   // game.setLine(x1, y1, x2, y2, state);
 }
 
 Type LineChangedEvent::getType()

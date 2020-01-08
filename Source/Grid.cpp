@@ -20,30 +20,40 @@ const char *InvalidGridCoordinatesException::what() const noexcept
     return errorMessage.c_str();
 }
 
-template <typename T>
-Grid<T>::Grid(int width, int height)
+
+Grid::Grid(int width, int height)
 {
-    createGrid(width, height);
+    create_grid(width, height);
 }
 
-template <typename T>
-void Grid<T>::setCell(int x, int y, T state)
+
+void Grid::set_cell(int x, int y, std::shared_ptr<CellState> state)
 {
+    if (!is_on_grid(x, y))
+        throw InvalidGridCoordinatesException(x, y, width, height);
     grid[y * width + x] = state;
 }
 
-template <typename T>
-T Grid<T>::getCell(int x, int y)
+
+std::unique_ptr<CellState> Grid::get_cell(int x, int y)
 {
+    if (!is_on_grid(x, y))
+        throw InvalidGridCoordinatesException(x, y, width, height);
+
     return grid[y * width + x];
 }
 
-template <typename T>
-void Grid<T>::createGrid(int width, int height)
+
+void Grid::create_grid(int width, int height)
 {
     this->width = width;
     this->height = height;
-    grid = std::make_unique(new T[width * height]);
+    grid = std::make_unique<CellState*> grid(new CellState[width * height]);
+}
+
+bool Grid::is_on_grid(int x, int y)
+{
+    return (x >= 0 && x < width && y >= 0 && y < width);
 }
 
 

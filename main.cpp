@@ -7,6 +7,8 @@
 #include "ClientGameController.hpp"
 #include "ServerGameController.hpp"
 
+#include "Game.hpp"
+
 #define CLIENT
 int main()
 {

@@ -60,10 +60,10 @@ void ServerNetworkController::acceptNewClient()
         clients.push_back(client);
         selector.add(*client);
         gameMutex.lock();
-        NewPlayerEvent event(game.grid);
+        // NewPlayerEvent event(game.grid);
         gameMutex.unlock();
-        sf::Packet packet = event.toPacket();
-        sendPacket(client, packet);
+        //sf::Packet packet = event.toPacket();
+        //sendPacket(client, packet);
     }
     else
     {

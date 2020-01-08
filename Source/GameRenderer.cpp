@@ -43,8 +43,8 @@ void GameRenderer::drawGrid()
     {
         for (int y = 0; y < 64; y++)
         {
-            State s = game.grid.getCell(x, y);
-            sf::Color color = Settings::COLORS[(int)s];
+            CellState s = game.grid_controller->get_cell(x, y);
+            sf::Color color = Settings::COLORS[1];
             drawCell(x, y, color);
         }
     }
@@ -52,6 +52,7 @@ void GameRenderer::drawGrid()
 
 void GameRenderer::drawGhosts()
 {
+    /*
     for (int x = 0; x < 64; x++)
     {
         for (int y = 0; y < 64; y++)
@@ -63,12 +64,13 @@ void GameRenderer::drawGhosts()
             drawCell(x, y, color);
         }
     }
+    */
 }
 
 void GameRenderer::drawBackground()
 {
-    int width = game.grid.getWidth();
-    int height = game.grid.getHeight();
+    int width = game.grid_controller->get_width();
+    int height = game.grid_controller->get_height();
     sf::RectangleShape bg;
     bg.setOutlineThickness(Settings::BORDER_WIDTH);
     bg.setOutlineColor(Settings::BORDER_COLOR);

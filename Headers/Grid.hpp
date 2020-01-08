@@ -2,8 +2,31 @@
 #define GRID_HPP
 
 #include <memory>
+#include <vector>
 
 #include "GridInterface.hpp"
+
+
+class Grid : GridInterface
+{
+public:
+    Grid(int width, int height);
+    ~Grid();
+
+    void set_cell(int x, int y, std::shared_ptr<CellState> state) override;
+    std::unique_ptr<CellState> get_cell(int x, int y) override;
+    bool is_on_grid(int x, int y) override;
+
+    int get_width() override;
+    int get_height() override;
+
+    void update() override {}
+
+private:
+    std::vector<std::unique_ptr<CellState>> grid;
+    int width, height;
+    void create_grid(int width, int height);
+};
 
 class InvalidGridDimensionsException : GridException
 {
@@ -21,7 +44,6 @@ class InvalidGridCoordinatesException : GridException
 {
 public:
     InvalidGridCoordinatesException(int x, int y, int width, int height);
-
     const char *what() const noexcept override;
 
 private:
@@ -29,25 +51,6 @@ private:
     const int y;
     const int width;
     const int height;
-};
-
-template <typename T>
-class Grid : GridInterface
-{
-public:
-    Grid(int width, int height);
-    ~Grid();
-
-    void setCell(int x, int y, T state) override;
-    T getCell(int x, int y) override;
-
-    int getWidth() override;
-    int getHeight() override;
-
-private:
-    std::unique_ptr<T> grid;
-    int width, height;
-    void createGrid(int width, int height);
 };
 
 #endif // GRID_HPP

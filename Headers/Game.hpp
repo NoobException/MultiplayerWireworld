@@ -1,7 +1,9 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "WireworldGrid.hpp"
+#include <memory>
+#include "GridInterface.hpp"
+#include "GridController.hpp"
 
 class Game
 {
@@ -16,16 +18,15 @@ class Game
     friend class LineChangedEvent;
 
 public:
-    void setCell(int x, int y, State state);
-    void setLine(int x1, int y1, int x2, int y2, State state);
-    void setRectangle(int x1, int y1, int x2, int y2, State state);
     void clearWires();
     Game(int width, int height);
+    
+    std::unique_ptr<GridController> grid_controller;
+    std::unique_ptr<GridController> ghosts_controller;
 
 private:
-
-    WireworldGrid grid;
-    WireworldGrid ghosts;
+    std::unique_ptr<GridInterface> grid;
+    std::unique_ptr<GridInterface> ghosts;
 };
 
 #endif // GAME_H

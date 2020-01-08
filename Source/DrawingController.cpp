@@ -54,7 +54,7 @@ void DrawingController::onCanvasClick(sf::Event::MouseButtonEvent event)
 
     x = pos.x;
     y = pos.y;
-    if (!game.grid.isOnGrid(x, y))
+    if (!game.grid_controller->is_on_grid(x, y))
         return;
 
     State s = drawnState;
@@ -75,7 +75,7 @@ void DrawingController::drawObject(sf::Event::MouseMoveEvent event)
     int x, y;
     x = pos.x / Settings::CELL_SIZE;
     y = pos.y / Settings::CELL_SIZE;
-    if (!game.grid.isOnGrid(x, y))
+    if (!game.grid_controller->is_on_grid(x, y))
         return;
 
     if (drawnObject.drawMode == DrawMode::DOTS)
@@ -105,12 +105,12 @@ void DrawingController::sendDrawnObject()
     if (drawnObject.drawMode == DrawMode::RECT)
     {
         event = new RectangleChangedEvent(x0, y0, x1, y1, drawnObject.drawnState);
-        game.ghosts.setRectangle(x0, y0, x1, y1, drawnObject.drawnState);
+        //game.ghosts.setRectangle(x0, y0, x1, y1, drawnObject.drawnState);
     }
     else if (drawnObject.drawMode == DrawMode::LINE)
     {
         event = new LineChangedEvent(x0, y0, x1, y1, drawnObject.drawnState);
-        game.ghosts.setLine(x0, y0, x1, y1, drawnObject.drawnState);
+        //game.ghosts.setLine(x0, y0, x1, y1, drawnObject.drawnState);
     }
     setBegin(0, 0);
     setEnd(0, 0);
@@ -120,12 +120,13 @@ void DrawingController::sendDrawnObject()
 
 void DrawingController::sendCellChanged(int x, int y, State s)
 {
-    State current_here = game.grid.getCell(x, y);
-    State ghost_here = game.ghosts.getCell(x, y);
-    if (s == current_here || s == ghost_here)
-        return;
+    auto current_here = game.grid_controller->get_cell(x, y);
+    auto ghost_here = game.ghosts_controller->get_cell(x, y);
+    
+    //if (s == current_here || s == ghost_here)
+      //  return;
 
-    game.ghosts.setCell(x, y, s);
+    // game.ghosts.setCell(x, y, s);
 
     NetworkEvent *event = new CellChangedEvent(x, y, s);
     networkController.sendEvent(event);

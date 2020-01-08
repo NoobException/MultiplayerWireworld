@@ -2,8 +2,11 @@
 #define GRIDINTERFACE_HPP
 
 #include <stdexcept>
+#include <memory>
 
-enum class State
+#include "CellState.hpp"
+
+enum class State 
 {
     EMPTY,
     COND,
@@ -23,11 +26,12 @@ public:
     virtual ~GridInterface(){};
 
     virtual void update() = 0;
-    virtual void setCell(int x, int y, State state) = 0;
-    virtual State getCell(int x, int y) = 0;
+    virtual void set_cell(int x, int y, std::unique_ptr<CellState> state) = 0;
+    virtual std::unique_ptr<CellState> get_cell(int x, int y) = 0;
+    virtual bool is_on_grid(int x, int y) = 0;
 
-    virtual int getWidth() = 0;
-    virtual int getHeight() = 0;
+    virtual int get_width() = 0;
+    virtual int get_height() = 0;
 };
 
 #endif
