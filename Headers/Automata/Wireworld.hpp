@@ -23,7 +23,7 @@ public:
     Type type;
 };
 
-class Wireworld : Game::Automaton
+class Wireworld : public Game::Automaton
 {
 public:
     Wireworld(Game::Grid &);

@@ -1,5 +1,8 @@
 #include "Automata/Wireworld.hpp"
 
+#include <memory>
+
+using namespace std;
 using namespace Automata;
 
 Wireworld::Wireworld(Game::Grid &grid) : grid(grid)
@@ -10,11 +13,11 @@ void Wireworld::update()
 {
     unique_ptr<Game::Grid> grid_copy = grid.get_copy();
     grid.for_each_field([&grid_copy, this](const Game::CellCoords &coords) {
-        grid.set_cell_state(coords, calculate_new_state(coords));
+        grid.set_cell_state(coords, make_unique(calculate_new_state(coords)));
     });
 }
 
-unique_ptr<WireworldState> Wireworld::calculate_new_state(const Game::CellCoords &coords, Game::Grid &grid_copy)
+WireworldState Wireworld::calculate_new_state(const Game::CellCoords &coords, Game::Grid &grid_copy)
 {
     WireworldState current_state = static_cast<WireworldState &&>(grid_copy.get_cell_state(coords));
     switch (current_state.type)

@@ -1,5 +1,5 @@
-#ifndef GAME_GAMELOGIC_HPP
-#define GAME_GAMELOGIC_HPP
+#ifndef GAME_GAMELOGICIMPL_HPP
+#define GAME_GAMELOGICIMPL_HPP
 
 #include "Game/Automaton.hpp"
 #include "Game/GameLogic.hpp"
@@ -25,4 +25,4 @@ private:
     Automaton &automaton;
 };
 } // namespace Game
-#endif // GAME_GAMELOGIC_HPP
+#endif // GAME_GAMELOGICIMPL_HPP
