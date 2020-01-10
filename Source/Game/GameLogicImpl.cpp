@@ -24,3 +24,8 @@ void GameLogicImpl::set_custom_shape(const Shape &shape, const CellState &cell_s
         grid.set_cell_state(*cell_coords, cell_state);
     }
 }
+
+GameLogicImpl::start()
+{
+    
+}

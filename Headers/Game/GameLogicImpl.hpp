@@ -18,7 +18,8 @@ public:
     virtual unique_ptr<CellState> get_cell_state(const CellCoords &) override;
     virtual void update_automaton() override;
     virtual void set_custom_shape(const Shape &, const CellState &) override;
-
+    virtual void start() override;
+    
 private:
     GamePresenter &game_presenter;
     Grid &grid;

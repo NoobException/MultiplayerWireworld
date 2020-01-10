@@ -1,16 +1,16 @@
 #ifndef GAMECONTROLLER_NETWORKCONTROLLER_HPP
 #define GAMECONTROLLER_NETWORKCONTROLLER_HPP
 
+#include "GameController/GameEvent.hpp"
+
 namespace GameController
 {
 class NetworkController
 {
 public:
-    virtual void controllerLoop() = 0;
-    virtual bool hasNextEvent() = 0;
-    virtual NetworkEvent *getNextEvent() = 0;
-    virtual void sendEvent(NetworkEvent *event) = 0;
+    virtual void start() = 0;
     virtual void stop() = 0;
+    virtual void send_event(const GameEvent &);
 };
 } // GameController
 
