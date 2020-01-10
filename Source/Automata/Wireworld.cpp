@@ -5,6 +5,16 @@
 using namespace std;
 using namespace Automata;
 
+WireworldState::WireworldState(Type type)
+{
+    this->type = type;
+}
+
+unique_ptr<Game::CellState> WireworldState::copy() const
+{
+    return unique_ptr<CellState>((CellState *)new WireworldState(type));
+}
+
 Wireworld::Wireworld(Game::Grid &grid) : grid(grid)
 {
 }
@@ -13,46 +23,52 @@ void Wireworld::update()
 {
     unique_ptr<Game::Grid> grid_copy = grid.get_copy();
     grid.for_each_field([&grid_copy, this](const Game::CellCoords &coords) {
-        grid.set_cell_state(coords, make_unique(calculate_new_state(coords)));
+        grid.set_cell_state(coords, calculate_new_state(coords, *grid_copy));
     });
 }
 
-WireworldState Wireworld::calculate_new_state(const Game::CellCoords &coords, Game::Grid &grid_copy)
+WireworldState &&Wireworld::calculate_new_state(const Game::CellCoords &coords, Game::Grid &grid_copy)
 {
-    WireworldState current_state = static_cast<WireworldState &&>(grid_copy.get_cell_state(coords));
+    WireworldState current_state = get_cell_state(coords, grid_copy);
     switch (current_state.type)
     {
     case WireworldState::EMPTY:
-        new_state = WireworldState::EMPTY;
-        break;
+        return move(WireworldState(WireworldState::EMPTY));
     case WireworldState::HEAD:
-        new_state = WireworldState::TAIL;
-        break;
+        return move(WireworldState(WireworldState::HEAD));
     case WireworldState::TAIL:
-        new_state = WireworldState::COND;
-        break;
+        return move(WireworldState(WireworldState::COND));
     case WireworldState::COND:
-        new_state = calculateConductorState(coords);
-        break;
+        return calculate_conductor_state(coords, grid_copy);
     }
 }
 
-WireworldState Wireworld::calculateConductorState(const Game::CellCoords &coords)
+WireworldState &&Wireworld::calculate_conductor_state(const Game::CellCoords &coords, Game::Grid &grid_copy)
 {
-    int n = 0;
-    for (int dx = -1; dx < 2; dx++)
-        for (int dy = -1; dy < 2; dy++)
-        {
-            if (dx == 0 && dy == 0)
-                continue;
-            int nx = x + dx;
-            int ny = y + dy;
-            if (nx < 0 || nx >= width || ny < 0 || ny >= height)
-                continue;
+    int count = count_head_neighbors(coords, grid_copy);
+    if (count == 0)
+        return move(WireworldState(WireworldState::COND));
+    else if (count <= 2)
+        return move(WireworldState(WireworldState::HEAD));
+    else
+        return move(WireworldState(WireworldState::COND));
+}
 
-            if (getCell(nx, ny) == WireworldState::HEAD)
-                n++;
+int Wireworld::count_head_neighbors(const Game::CellCoords &coords, Game::Grid &grid_copy)
+{
+    int count = 0;
+    coords.for_each_neighbor([&grid_copy, &count, this](const Game::CellCoords &neighbor_coords) {
+        if (grid_copy.is_on_grid(neighbor_coords))
+        {
+            WireworldState state = get_cell_state(neighbor_coords, grid_copy);
+            if (state.type == WireworldState::HEAD)
+                count++;
         }
-    new_state = (n == 1 || n == 2 ? WireworldState::HEAD : WireworldState::COND);
-    return new_state;
+    });
+    return count;
+}
+
+WireworldState &&Wireworld::get_cell_state(const Game::CellCoords &coords, Game::Grid &grid_copy)
+{
+    return static_cast<WireworldState &&>(move(*grid_copy.get_cell_state(coords)));
 }

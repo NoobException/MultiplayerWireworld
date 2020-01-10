@@ -19,17 +19,17 @@ class GridException : exception
 class Grid
 {
 public:
-    virtual void set_cell_state(const CellCoords &, unique_ptr<CellState>);
-    virtual CellState &&get_cell_state(const CellCoords &);
-    virtual bool is_on_grid(const CellCoords &);
+    virtual void set_cell_state(const CellCoords &, const CellState &) = 0;
+    virtual unique_ptr<CellState> get_cell_state(const CellCoords &) const = 0;
+    virtual bool is_on_grid(const CellCoords &) const = 0;
 
-    virtual int get_width();
-    virtual int get_height();
+    virtual int get_width() const = 0;
+    virtual int get_height() const = 0;
 
-    virtual unique_ptr<Grid> get_copy();
-    virtual void set_grid(const Grid &);
+    virtual unique_ptr<Grid> get_copy() const = 0;
+    virtual void set_grid(const Grid &) = 0;
 
-    virtual void for_each_field(function<void(const CellCoords &)>);
+    virtual void for_each_field(function<void(const CellCoords &)>) const = 0;
 };
 } // namespace Game
 

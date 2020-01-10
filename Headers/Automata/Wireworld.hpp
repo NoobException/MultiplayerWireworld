@@ -10,6 +10,7 @@ namespace Automata
 {
 class WireworldState : public Game::CellState
 {
+public:
     enum Type
     {
         NONE,
@@ -18,8 +19,8 @@ class WireworldState : public Game::CellState
         TAIL,
         COND
     };
-
-public:
+    virtual unique_ptr<Game::CellState> copy() const override;
+    WireworldState(Type type);
     Type type;
 };
 
@@ -30,9 +31,12 @@ public:
     virtual void update() override;
 
 private:
-    WireworldState calculate_new_state(const Game::CellCoords &);
-    WireworldState calculate_conductor_state(const Game::CellCoords &);
+    WireworldState &&calculate_new_state(const Game::CellCoords &, Game::Grid &);
+    WireworldState &&calculate_conductor_state(const Game::CellCoords &, Game::Grid &);
+    int count_head_neighbors(const Game::CellCoords &, Game::Grid &);
     Game::Grid &grid;
+
+    WireworldState &&get_cell_state(const Game::CellCoords &coords, Game::Grid &grid_copy);
 };
 } // namespace Automata
 

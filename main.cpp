@@ -8,7 +8,8 @@
 
 int main()
 {
-    Grid::GridImpl grid(64, 64);
+    Grid::GridImpl grid(64, 64, Automata::WireworldState(Automata::WireworldState::NONE));
+    GamePresenter::GamePresenterImpl presenter;
     Automata::Wireworld automaton(grid);
 
     Network::NetworkPresenterImpl network_presenter;
