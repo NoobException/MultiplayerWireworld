@@ -1,8 +1,8 @@
-#ifndef NETWORKCONTROLLER_HPP
-#define NETWORKCONTROLLER_HPP
+#ifndef GAMECONTROLLER_NETWORKCONTROLLER_HPP
+#define GAMECONTROLLER_NETWORKCONTROLLER_HPP
 
-#include "NetworkEvents/Events.hpp"
-
+namespace GameController
+{
 class NetworkController
 {
 public:
@@ -12,5 +12,6 @@ public:
     virtual void sendEvent(NetworkEvent *event) = 0;
     virtual void stop() = 0;
 };
+} // GameController
 
-#endif // NETWORKCONTROLLER_HPP
+#endif // GAMECONTROLLER_NETWORKCONTROLLER_HPP
