@@ -3,12 +3,9 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "DrawingController.hpp"
-#include "GameRenderer.hpp"
-#include "Networking/ClientNetworkController.hpp"
+#include "Game/GameController.hpp"
 
-
-class ClientGameController
+class ClientGameController : Game::GameController
 {
 public:
     ClientGameController(Game &game, ClientNetworkController &controller);

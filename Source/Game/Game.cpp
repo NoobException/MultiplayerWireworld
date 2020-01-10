@@ -3,8 +3,6 @@
 #include "Utils.hpp"
 Game::Game(int width, int height)
 {
-    
-
 }
 
 /*
