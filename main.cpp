@@ -5,8 +5,8 @@
 
 int main()
 {
-    Grid::GridImpl grid();
-    GamePresenter::GamePresenterImpl presenter();
-    Automata::Wireworld automaton();
+    Grid::GridImpl grid;
+    GamePresenter::GamePresenterImpl presenter;
+    Automata::Wireworld automaton;
     Game::GameLogicImpl logic(presenter, grid, automaton);
 }

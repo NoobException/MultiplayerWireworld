@@ -15,7 +15,7 @@ class GridImpl : Game::Grid
 public:
     GridImpl(int width, int height);
 
-    virtual void set_cell_state(const Game::CellCoords &, unique_ptr<Game::CellState>) override;
+    virtual void set_cell_state(const Game::CellCoords &, const Game::CellState &) override;
     virtual Game::CellState &&get_cell_state(const Game::CellCoords &) override;
     virtual bool is_on_grid(const Game::CellCoords &) override;
 

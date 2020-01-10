@@ -19,7 +19,7 @@ class GridException : exception
 class Grid
 {
 public:
-    virtual void set_cell_state(const CellCoords &, unique_ptr<CellState>);
+    virtual void set_cell_state(const CellCoords &, const CellState &);
     virtual CellState &&get_cell_state(const CellCoords &);
     virtual bool is_on_grid(const CellCoords &);
 

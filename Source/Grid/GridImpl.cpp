@@ -28,7 +28,7 @@ GridImpl::GridImpl(int width, int height)
     create_grid(width, height);
 }
 
-void GridImpl::set_cell_state(const Game::CellCoords &coords, unique_ptr<Game::CellState> state)
+void GridImpl::set_cell_state(const Game::CellCoords &coords, Game::CellState &&state)
 {
     if (!is_on_grid(coords))
         throw InvalidGridCoordinatesException(x, y, width, height);
