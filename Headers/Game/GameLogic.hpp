@@ -19,4 +19,4 @@ public:
 };
 } // namespace Game
 
-#endif //  GAMECONTROLLER_HPP
+#endif // GAME_GAMELOGIC_HPP

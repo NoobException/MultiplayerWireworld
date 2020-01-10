@@ -10,7 +10,7 @@ using namespace std;
 
 namespace Grid
 {
-class GridImpl : Game::Grid
+class GridImpl : public Game::Grid
 {
 public:
     GridImpl(int width, int height);

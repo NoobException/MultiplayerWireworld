@@ -10,4 +10,4 @@ class GamePresenterImpl : public Game::GamePresenter
 };
 } // namespace GamePresenter
 
-#endif
+#endif // GAMEPRESENTER_GAMEPRESENTERIMPL_HPP

@@ -37,6 +37,7 @@ void GridImpl::set_cell_state(const Game::CellCoords &coords, Game::CellState &&
 
 Game::CellState &&GridImpl::get_cell_state(const Game::CellCoords &coords)
 {
+    int x, y;
     if (!is_on_grid(coords))
         throw InvalidGridCoordinatesException(x, y, width, height);
 
@@ -52,5 +53,5 @@ void GridImpl::create_grid(int width, int height)
 
 bool GridImpl::is_on_grid(const Game::CellCoords &)
 {
-    return (x >= 0 && x < width && y >= 0 && y < width);
+
 }

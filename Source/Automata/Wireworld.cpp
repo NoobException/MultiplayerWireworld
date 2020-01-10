@@ -1,5 +1,8 @@
 #include "Automata/Wireworld.hpp"
 
+#include <memory>
+
+using namespace std;
 using namespace Automata;
 
 Wireworld::Wireworld(Game::Grid &grid) : grid(grid)
