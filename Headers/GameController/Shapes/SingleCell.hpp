@@ -15,11 +15,11 @@ namespace GameController
 class SingleCell : public ShapeImpl
 {
 public:
-    SingleCell(const CellCoords &);
+    SingleCell(const Game::CellCoords &);
 
 private:
-    unique_ptr<CellCoords> coords;
-    vector<shared_ptr<CellCoords>> shape;
+    unique_ptr<Game::CellCoords> coords;
+    vector<shared_ptr<Game::CellCoords>> shape;
 };
 } // namespace GameController
 

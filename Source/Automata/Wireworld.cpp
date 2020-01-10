@@ -9,20 +9,15 @@ Wireworld::Wireworld(Game::Grid &grid) : grid(grid)
 void Wireworld::update()
 {
     unique_ptr<Game::Grid> grid_copy = grid.get_copy();
-    for (int x = 0; x < grid.get_width(); x++)
-    {
-        for (int y = 0; y < grid.get_height(); y++)
-        {
-            Game::CellCoords cords = Game::CellCoords(x, y);
-            calculateNewState();
-        }
-    }
+    grid.for_each_field([&grid_copy, this](const Game::CellCoords &coords) {
+        grid.set_cell_state(coords, calculate_new_state(coords));
+    });
 }
 
-WireworldState Wireworld::calculateNewState(const Game::CellCoords &coords)
+unique_ptr<WireworldState> Wireworld::calculate_new_state(const Game::CellCoords &coords, Game::Grid &grid_copy)
 {
-    WireworldState current_state, new_state;
-    switch (current_state)
+    WireworldState current_state = static_cast<WireworldState &&>(grid_copy.get_cell_state(coords));
+    switch (current_state.type)
     {
     case WireworldState::EMPTY:
         new_state = WireworldState::EMPTY;

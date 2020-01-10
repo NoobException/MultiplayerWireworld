@@ -1,13 +1,15 @@
 #ifndef GAMECONTROLLER_SHAPES_CELLIMPL_HPP
 #define GAMECONTROLLER_SHAPES_CELLIMPL_HPP
+
 #include <vector>
+#include <memory>
 
 #include "Game/Shape.hpp"
 #include "Game/CellCoords.hpp"
 
 using namespace std;
 
-typedef vector<shared_ptr<CellCoords>>::const_iterator ShapeIterator;
+typedef vector<shared_ptr<Game::CellCoords>>::const_iterator ShapeIterator;
 
 namespace GameController
 {
@@ -18,7 +20,7 @@ public:
     virtual ShapeIterator end() const override;
 
 private:
-    vector<shared_ptr<CellCoords>> shape;
+    vector<shared_ptr<Game::CellCoords>> shape;
 };
 } // namespace GameController
 

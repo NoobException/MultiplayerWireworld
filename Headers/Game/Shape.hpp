@@ -2,11 +2,13 @@
 #define GAME_SHAPE_HPP
 
 #include <iterator>
-#include <memory>
+#include <vector>
 
 #include "Game/CellCoords.hpp"
 
-typedef iterator<shared_ptr<Game::CellCoords>> ShapeIterator;
+using namespace std;
+
+typedef vector<unique_ptr<Game::CellCoords>>::const_iterator ShapeIterator;
 
 namespace Game
 {

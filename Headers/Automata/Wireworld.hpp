@@ -8,7 +8,7 @@
 
 namespace Automata
 {
-class WireworldState : Game::CellState
+class WireworldState : public Game::CellState
 {
     enum Type
     {
@@ -18,6 +18,9 @@ class WireworldState : Game::CellState
         TAIL,
         COND
     };
+
+public:
+    Type type;
 };
 
 class Wireworld : Game::Automaton
@@ -27,8 +30,8 @@ public:
     virtual void update() override;
 
 private:
-    WireworldState calculateNewState(const Game::CellCoords &);
-    WireworldState calculateConductorState(const Game::CellCoords &);
+    WireworldState calculate_new_state(const Game::CellCoords &);
+    WireworldState calculate_conductor_state(const Game::CellCoords &);
     Game::Grid &grid;
 };
 } // namespace Automata

@@ -3,8 +3,10 @@
 
 #include <memory>
 #include <exception>
+#include <functional>
 
 #include "Game/CellState.hpp"
+#include "Game/CellCoords.hpp"
 
 using namespace std;
 
@@ -17,8 +19,8 @@ class GridException : exception
 class Grid
 {
 public:
-    virtual void set_cell_state(const CellCoords &, const CellState &);
-    virtual unique_ptr<CellState> get_cell_state(const CellCoords &);
+    virtual void set_cell_state(const CellCoords &, unique_ptr<CellState>);
+    virtual CellState &&get_cell_state(const CellCoords &);
     virtual bool is_on_grid(const CellCoords &);
 
     virtual int get_width();
@@ -26,6 +28,8 @@ public:
 
     virtual unique_ptr<Grid> get_copy();
     virtual void set_grid(const Grid &);
+
+    virtual void for_each_field(function<void(const CellCoords &)>);
 };
 } // namespace Game
 

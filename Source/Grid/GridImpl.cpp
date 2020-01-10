@@ -1,4 +1,7 @@
-#include "Grid.hpp"
+#include "Grid/GridImpl.hpp"
+
+using namespace std;
+using namespace Grid;
 
 InvalidGridDimensionsException::InvalidGridDimensionsException(int width, int height) : width(width), height(height)
 {
@@ -20,40 +23,34 @@ const char *InvalidGridCoordinatesException::what() const noexcept
     return errorMessage.c_str();
 }
 
-
-Grid::Grid(int width, int height)
+GridImpl::GridImpl(int width, int height)
 {
     create_grid(width, height);
 }
 
-
-void Grid::set_cell(int x, int y, std::shared_ptr<CellState> state)
+void GridImpl::set_cell_state(const Game::CellCoords &coords, unique_ptr<Game::CellState> state)
 {
-    if (!is_on_grid(x, y))
+    if (!is_on_grid(coords))
         throw InvalidGridCoordinatesException(x, y, width, height);
     grid[y * width + x] = state;
 }
 
-
-std::unique_ptr<CellState> Grid::get_cell(int x, int y)
+Game::CellState &&GridImpl::get_cell_state(const Game::CellCoords &coords)
 {
-    if (!is_on_grid(x, y))
+    if (!is_on_grid(coords))
         throw InvalidGridCoordinatesException(x, y, width, height);
 
-    return grid[y * width + x];
+    return *grid[y * width + x];
 }
 
-
-void Grid::create_grid(int width, int height)
+void GridImpl::create_grid(int width, int height)
 {
     this->width = width;
     this->height = height;
-    grid = std::make_unique<CellState*> grid(new CellState[width * height]);
+    grid = std::make_unique<Game::CellState>(new Game::CellState[width * height]);
 }
 
-bool Grid::is_on_grid(int x, int y)
+bool GridImpl::is_on_grid(const Game::CellCoords &)
 {
     return (x >= 0 && x < width && y >= 0 && y < width);
 }
-
-
