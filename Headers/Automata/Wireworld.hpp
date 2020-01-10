@@ -19,6 +19,7 @@ public:
         TAIL,
         COND
     };
+    virtual unique_ptr<Game::CellState> copy() const override;
     WireworldState(Type type);
     Type type;
 };

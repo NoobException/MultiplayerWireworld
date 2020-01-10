@@ -8,7 +8,7 @@ CellCoordsImpl::CellCoordsImpl(int x, int y)
     this->y = y;
 }
 
-void CellCoordsImpl::for_each_neighbor(function<void(const CellCoords &)> f)
+void CellCoordsImpl::for_each_neighbor(function<void(const CellCoords &)> f) const
 {
     for (int nx = x - 1; nx <= x + 1; nx++)
         for (int ny = y - 1; ny <= y + 1; ny++)

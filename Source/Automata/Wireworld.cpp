@@ -5,6 +5,16 @@
 using namespace std;
 using namespace Automata;
 
+WireworldState::WireworldState(Type type)
+{
+    this->type = type;
+}
+
+unique_ptr<Game::CellState> WireworldState::copy() const
+{
+    return unique_ptr<CellState>((CellState *)new WireworldState(type));
+}
+
 Wireworld::Wireworld(Game::Grid &grid) : grid(grid)
 {
 }
@@ -23,14 +33,13 @@ WireworldState &&Wireworld::calculate_new_state(const Game::CellCoords &coords, 
     switch (current_state.type)
     {
     case WireworldState::EMPTY:
-        return WireworldState(WireworldState::EMPTY);
+        return move(WireworldState(WireworldState::EMPTY));
     case WireworldState::HEAD:
-        return WireworldState(WireworldState::HEAD);
+        return move(WireworldState(WireworldState::HEAD));
     case WireworldState::TAIL:
-        return WireworldState(WireworldState::COND);
+        return move(WireworldState(WireworldState::COND));
     case WireworldState::COND:
         return calculate_conductor_state(coords, grid_copy);
-        break;
     }
 }
 
@@ -38,11 +47,11 @@ WireworldState &&Wireworld::calculate_conductor_state(const Game::CellCoords &co
 {
     int count = count_head_neighbors(coords, grid_copy);
     if (count == 0)
-        return WireworldState(WireworldState::COND);
+        return move(WireworldState(WireworldState::COND));
     else if (count <= 2)
-        return WireworldState(WireworldState::HEAD);
+        return move(WireworldState(WireworldState::HEAD));
     else
-        return WireworldState(WireworldState::COND);
+        return move(WireworldState(WireworldState::COND));
 }
 
 int Wireworld::count_head_neighbors(const Game::CellCoords &coords, Game::Grid &grid_copy)
@@ -61,5 +70,5 @@ int Wireworld::count_head_neighbors(const Game::CellCoords &coords, Game::Grid &
 
 WireworldState &&Wireworld::get_cell_state(const Game::CellCoords &coords, Game::Grid &grid_copy)
 {
-    return static_cast<WireworldState &&>(grid_copy.get_cell_state(coords));
+    return static_cast<WireworldState &&>(move(*grid_copy.get_cell_state(coords)));
 }

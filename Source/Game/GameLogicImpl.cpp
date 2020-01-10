@@ -9,7 +9,7 @@ GameLogicImpl::GameLogicImpl(GamePresenter &game_presenter, Grid &grid, Automato
 
 unique_ptr<CellState> GameLogicImpl::get_cell_state(const CellCoords &cell_coords)
 {
-    return grid.get_cell_state(cell_coords)
+    return grid.get_cell_state(cell_coords);
 }
 
 void GameLogicImpl::update_automaton()

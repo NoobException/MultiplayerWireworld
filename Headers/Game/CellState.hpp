@@ -1,13 +1,17 @@
 #ifndef GAME_CELLSTATE_HPP
 #define GAME_CELLSTATE_HPP
 
+#include <memory>
+
+using namespace std;
+
 namespace Game
 {
 class CellState
 {
+public:
+    virtual unique_ptr<CellState> copy() const = 0;
 };
 } // namespace Game
 
-#endif
-
-// Network -> (Event) -> Controller.set_cell() -> GridInterface.set_cell() -> Grid.set_cell(x, y, CellState)
+#endif //GAME_CELLSTATE_HPP
