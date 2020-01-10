@@ -1,4 +1,4 @@
-#include "Grid.hpp"
+#include "Game/Grid.hpp"
 
 InvalidGridDimensionsException::InvalidGridDimensionsException(int width, int height) : width(width), height(height)
 {

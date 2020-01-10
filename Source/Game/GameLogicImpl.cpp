@@ -1,5 +1,4 @@
 #include "Game/GameLogic.hpp"
-
 #include "Game/Shape.hpp"
 
 using namespace std;

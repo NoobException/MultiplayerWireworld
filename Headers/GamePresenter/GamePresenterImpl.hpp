@@ -7,7 +7,7 @@ namespace GamePresenter
 {
 class GamePresenterImpl : Game::GamePresenter
 {
-}
+};
 } // namespace GamePresenter
 
 #endif

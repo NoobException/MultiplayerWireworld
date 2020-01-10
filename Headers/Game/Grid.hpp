@@ -5,6 +5,7 @@
 #include <exception>
 
 #include "Game/CellState.hpp"
+#include "Game/CellCoords.hpp"
 
 using namespace std;
 
