@@ -2,12 +2,10 @@
 #define GAMECONTROLLER_GAMECONTROLLER_HPP
 
 #include "Game/GameLogic.hpp"
-#include "GameController/UIController.hpp"
-#include "GameController/NetworkController.hpp"
 
 namespace GameController
 {
-class GameController : public UIController, public NetworkController
+class GameController
 {
 public:
     GameController(Game::GameLogic &);

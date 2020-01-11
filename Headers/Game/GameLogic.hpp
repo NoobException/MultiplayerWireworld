@@ -16,7 +16,6 @@ public:
     virtual unique_ptr<CellState> get_cell_state(const CellCoords &) = 0;
     virtual void update_automaton() = 0;
     virtual void set_custom_shape(const Shape &, const CellState &) = 0;
-    virtual void start() = 0;
 };
 } // namespace Game
 

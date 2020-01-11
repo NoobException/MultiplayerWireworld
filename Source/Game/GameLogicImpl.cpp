@@ -25,7 +25,3 @@ void GameLogicImpl::set_custom_shape(const Shape &shape, const CellState &cell_s
     }
 }
 
-GameLogicImpl::start()
-{
-    
-}

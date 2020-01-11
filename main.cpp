@@ -1,29 +1,37 @@
-#include "Game/GameLogicImpl.hpp"
+#include "Network/CommunicatorImpl.hpp"
+#include "UI/WindowImpl.hpp"
 #include "Grid/GridImpl.hpp"
-#include "GamePresenter/GamePresenterImpl.hpp"
-#include "GameController/GameControllerImpl.hpp"
 #include "Automata/Wireworld.hpp"
-#include "Network/Communicator.hpp"
-#include "UI/Window.hpp"
+
+#include "Network/NetworkPresenterImpl.hpp"
+#include "UI/UIPresenterImpl.hpp"
+#include "GamePresenter/GamePresenterImpl.hpp"
+
+#include "GameController/GameControllerImpl.hpp"
+#include "Network/NetworkControllerImpl.hpp"
+#include "UI/UIControllerImpl.hpp"
+#include "Game/GameLogicImpl.hpp"
 
 int main()
 {
+    UI::WindowImpl ui_window;
+    Network::CommunicatorImpl network_communicator;
+
     Grid::GridImpl grid(64, 64, Automata::WireworldState(Automata::WireworldState::NONE));
-    GamePresenter::GamePresenterImpl presenter;
     Automata::Wireworld automaton(grid);
 
-    Network::NetworkPresenterImpl network_presenter;
-    UI::UIPresenterImpl ui_presenter;
+    Network::NetworkPresenterImpl network_presenter(network_communicator);
+    UI::UIPresenterImpl ui_presenter(ui_window);
 
-    GamePresenter::GamePresenterImpl presenter(network_presenter, ui_presenter);
-    Game::GameLogicImpl logic(presenter, grid, automaton);
+    GamePresenter::GamePresenterImpl game_presenter(network_presenter, ui_presenter);
+
+    GamePresenter::GamePresenterImpl game_presenter(network_presenter, ui_presenter);
+    Game::GameLogicImpl logic(game_presenter, grid, automaton);
     GameController::GameControllerImpl game_controller(logic);
 
-    Network::NetworkControllerImpl network_controller(game_controller);
-    UI::UIControllerImpl ui_controller(game_controller);
+    Network::NetworkControllerImpl network_controller(game_controller, network_communicator);
+    UI::UIControllerImpl ui_controller(game_controller, ui_window);
 
-    UI::Window ui_window(ui_controller, ui_presenter);
-    Network::Communicator network_communicator(network_controller, network_presenter);
-
-    logic.start();
+    network_controller.start();
+    ui_controller.start();
 }

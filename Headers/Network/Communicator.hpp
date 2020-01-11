@@ -6,15 +6,10 @@
 
 namespace Network
 {
-class Communicator : public GamePresenter::NetworkPresenter
+class Communicator
 {
-    public:
-        Communicator(GameController::NetworkController &);
-    private:
-        GameController::NetworkController & network_controller;
 };
 
-} // Network
-
+} // namespace Network
 
 #endif // NETWORK_COMMUNICATOR_HPP
