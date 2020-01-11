@@ -10,8 +10,8 @@ class NetworkController
 public:
     virtual void start() = 0;
     virtual void stop() = 0;
-    virtual void send_event(const GameEvent &);
+    virtual void send_event(const GameEvent &) = 0;
 };
-} // GameController
+} // namespace GameController
 
 #endif // GAMECONTROLLER_NETWORKCONTROLLER_HPP

@@ -10,7 +10,8 @@ namespace GamePresenter
 class GamePresenterImpl : public Game::GamePresenter
 {
 public:
-    GamePresenterImpl(NetworkPresenter & network_presenter, UIPresenter & ui_presenter);
+    GamePresenterImpl(NetworkPresenter &network_presenter, UIPresenter &ui_presenter);
+
 private:
     NetworkPresenter &network_presenter;
     UIPresenter &ui_presenter;

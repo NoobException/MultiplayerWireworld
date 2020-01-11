@@ -25,7 +25,6 @@ int main()
 
     GamePresenter::GamePresenterImpl game_presenter(network_presenter, ui_presenter);
 
-    GamePresenter::GamePresenterImpl game_presenter(network_presenter, ui_presenter);
     Game::GameLogicImpl logic(game_presenter, grid, automaton);
     GameController::GameControllerImpl game_controller(logic);
 

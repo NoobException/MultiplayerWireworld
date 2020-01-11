@@ -12,8 +12,16 @@ class NetworkControllerImpl : public GameController::NetworkController
 public:
     NetworkControllerImpl(
         GameController::GameController &,
-        Communicator &);
-}
+        Network::Communicator &);
+
+    virtual void start() override;
+    virtual void stop() override;
+    virtual void send_event(const GameEvent &) override;
+
+private:
+    GameController::GameController &game_controller;
+    Network::Communicator &communicator;
+};
 } // namespace Network
 
 #endif // NETWORK_NETWORKCONTROLLERIMPL_HPP

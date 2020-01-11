@@ -10,8 +10,10 @@ namespace UI
 class UIControllerImpl : public GameController::UIController
 {
 public:
-    UIController(GameController::GameController &,
-                 UI::Window &);
+    UIControllerImpl(
+        GameController::GameController &,
+        UI::Window &);
+    void start() override;
 
 private:
     GameController::GameController &game_controller;

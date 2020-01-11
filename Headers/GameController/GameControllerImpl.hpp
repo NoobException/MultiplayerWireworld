@@ -8,7 +8,7 @@
 using namespace std;
 namespace GameController
 {
-class GameControllerImpl : GameController
+class GameControllerImpl : public GameController
 {
 public:
     GameControllerImpl(Game::GameLogic &);
