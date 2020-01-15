@@ -17,20 +17,21 @@ int main()
     UI::WindowImpl ui_window;
     Network::CommunicatorImpl network_communicator;
 
-    Grid::GridImpl grid(64, 64, Automata::WireworldState(Automata::WireworldState::NONE));
-    Automata::Wireworld automaton(grid);
-
+    Network::NetworkControllerImpl network_controller(network_communicator);
     Network::NetworkPresenterImpl network_presenter(network_communicator);
+
+    UI::UIControllerImpl ui_controller(ui_window);
     UI::UIPresenterImpl ui_presenter(ui_window);
 
     GamePresenter::GamePresenterImpl game_presenter(network_presenter, ui_presenter);
 
+    Grid::GridImpl grid(64, 64, Automata::WireworldState(Automata::WireworldState::NONE));
+    Automata::Wireworld automaton(grid);
+
     Game::GameLogicImpl logic(game_presenter, grid, automaton);
-    GameController::GameControllerImpl game_controller(logic);
+    GameController::GameControllerImpl game_controller(logic,
+                                                       ui_controller,
+                                                       network_controller);
 
-    Network::NetworkControllerImpl network_controller(game_controller, network_communicator);
-    UI::UIControllerImpl ui_controller(game_controller, ui_window);
-
-    network_controller.start();
-    ui_controller.start();
+    game_controller.start();
 }

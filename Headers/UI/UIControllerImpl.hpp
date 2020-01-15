@@ -1,22 +1,21 @@
 #ifndef UI_UICONTROLLERIMPL_HPP
 #define UI_UICONTROLLERIMPL_HPP
 
-#include "GameController/UIController.hpp"
-#include "GameController/GameController.hpp"
+#include <memory>
+
+#include "GameController/ComponentController.hpp"
 #include "UI/Window.hpp"
 
 namespace UI
 {
-class UIControllerImpl : public GameController::UIController
+class UIControllerImpl : public GameController::ComponentController
 {
 public:
-    UIControllerImpl(
-        GameController::GameController &,
-        UI::Window &);
-    void start() override;
+    UIControllerImpl(UI::Window &);
+    virtual std::unique_ptr<GameEvent> get_next_game_event() override;
+    virtual bool has_next_game_event() override;
 
 private:
-    GameController::GameController &game_controller;
     UI::Window &window;
 };
 } // namespace UI

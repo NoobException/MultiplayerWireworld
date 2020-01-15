@@ -1,25 +1,22 @@
 #ifndef NETWORK_NETWORKCONTROLLERIMPL_HPP
 #define NETWORK_NETWORKCONTROLLERIMPL_HPP
 
-#include "GameController/NetworkController.hpp"
-#include "GameController/GameController.hpp"
+#include <memory>
+
+#include "GameController/ComponentController.hpp"
+#include "GameController/GameEvent.hpp"
 #include "Network/Communicator.hpp"
 
 namespace Network
 {
-class NetworkControllerImpl : public GameController::NetworkController
+class NetworkControllerImpl : public GameController::ComponentController
 {
 public:
-    NetworkControllerImpl(
-        GameController::GameController &,
-        Network::Communicator &);
-
-    virtual void start() override;
-    virtual void stop() override;
-    virtual void send_event(const GameEvent &) override;
+    NetworkControllerImpl(Network::Communicator &);
+    virtual std::unique_ptr<GameEvent> get_next_game_event() override;
+    virtual bool has_next_game_event() override;
 
 private:
-    GameController::GameController &game_controller;
     Network::Communicator &communicator;
 };
 } // namespace Network

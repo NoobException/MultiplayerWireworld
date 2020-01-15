@@ -3,6 +3,7 @@
 
 namespace GamePresenter
 {
+
 class NetworkPresenter
 {
 public:

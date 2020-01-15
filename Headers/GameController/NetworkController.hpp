@@ -8,8 +8,6 @@ namespace GameController
 class NetworkController
 {
 public:
-    virtual void start() = 0;
-    virtual void stop() = 0;
     virtual void send_event(const GameEvent &) = 0;
 };
 } // namespace GameController

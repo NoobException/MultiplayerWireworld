@@ -2,6 +2,7 @@
 #define GAMECONTROLLER_GAMECONTROLLER_HPP
 
 #include "Game/GameLogic.hpp"
+#include "GameController/ComponentController.hpp"
 
 namespace GameController
 {
@@ -11,6 +12,7 @@ public:
     virtual unique_ptr<Game::CellState> get_cell_state(const Game::CellCoords &) = 0;
     virtual void update_automaton() = 0;
     virtual void set_custom_shape(const Game::Shape &, const Game::CellState &) = 0;
+    virtual void start() = 0;
 };
 } // namespace GameController
 
