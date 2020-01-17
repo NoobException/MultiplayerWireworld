@@ -3,8 +3,14 @@
 using namespace std;
 using namespace Game;
 
-GameLogicImpl::GameLogicImpl(GamePresenter &game_presenter, Grid &grid, Automaton &automaton) : game_presenter(game_presenter), grid(grid), automaton(automaton)
+GameLogicImpl::GameLogicImpl(
+    GamePresenter &game_presenter,
+    Grid &grid,
+    Automaton &automaton) : game_presenter(game_presenter),
+                            grid(grid),
+                            automaton(automaton)
 {
+    running = false;
 }
 
 unique_ptr<CellState> GameLogicImpl::get_cell_state(const CellCoords &cell_coords)
@@ -25,3 +31,19 @@ void GameLogicImpl::set_custom_shape(const Shape &shape, const CellState &cell_s
     }
 }
 
+void GameLogicImpl::update()
+{
+}
+
+bool GameLogicImpl::is_running()
+{
+    return running;
+}
+void GameLogicImpl::start()
+{
+    running = true;
+}
+void GameLogicImpl::quit()
+{
+    running = false;
+}

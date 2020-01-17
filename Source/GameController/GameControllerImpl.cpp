@@ -20,4 +20,8 @@ void GameControllerImpl::set_custom_shape(const Game::Shape &, const Game::CellS
 
 void GameControllerImpl::start()
 {
+    while (game_logic.is_running())
+    {
+        game_logic.update();
+    }
 }
