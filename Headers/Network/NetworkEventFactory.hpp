@@ -2,15 +2,16 @@
 #define NETWORK_NETWORKEVENTFACTORY_HPP
 
 #include <SFML/Network.hpp>
-#include "NetworkEvents/Events.hpp"
+
+#include "Network/NetworkEvents/NetworkEvent.hpp"
 
 namespace Network
 {
 class NetworkEventFactory
 {
 public:
-  static NetworkEvent *newNetworkEvent(sf::Packet &data);
+  static unique_ptr<NetworkEvent> newNetworkEvent(sf::Packet &data);
 };
-} // Network
+} // namespace Network
 
 #endif // NETWORK_NETWORKEVENTFACTORY_HPP

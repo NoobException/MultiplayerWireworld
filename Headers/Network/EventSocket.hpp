@@ -18,10 +18,11 @@ class EventSocket
 {
 public:
     EventSocket();
+    ~EventSocket();
     void connect(string address, int port);
     void send(NetworkEvent &);
     bool has_next_event();
-    unique_ptr<NetworkEvent> &&get_next_event();
+    unique_ptr<NetworkEvent> get_next_event();
 
 private:
     void thread_loop();

@@ -1,37 +1,45 @@
 #ifndef EVENTS_HPP
 #define EVENTS_HPP
 
-#include <SFML/Network.hpp>
-#include "WireworldGrid.hpp"
-#include "Networking/NetworkEvents/NetworkEvent.hpp"
+#include <memory>
 
+#include <SFML/Network.hpp>
+
+#include "Game/GameLogic.hpp"
+#include "Game/Grid.hpp"
+#include "Network/NetworkEvents/NetworkEvent.hpp"
+
+using namespace std;
+
+namespace Network
+{
 class CellChangedEvent : public NetworkEvent
 {
 public:
-    CellChangedEvent(int x, int y, State state);
+    CellChangedEvent(int x, int y, const Game::CellState &state);
     CellChangedEvent(sf::Packet &data);
     Type getType() override;
     sf::Packet toPacket() override;
-    void apply(Game &game) override;
+    void apply(Game::GameLogic &) override;
 
 private:
     int x, y;
-    State state;
+    unique_ptr<Game::CellState> state;
 };
 
 class NewPlayerEvent : public NetworkEvent
 {
 public:
-    NewPlayerEvent(WireworldGrid grid);
+    NewPlayerEvent(const Game::Grid &grid);
     NewPlayerEvent(sf::Packet &data);
     Type getType() override;
     sf::Packet toPacket() override;
-    void apply(Game &game) override;
+    void apply(Game::GameLogic &) override;
 
 private:
     int width;
     int height;
-    WireworldGrid grid;
+    unique_ptr<Game::Grid> grid;
 };
 class AdvanceSimulationEvent : public NetworkEvent
 {
@@ -40,7 +48,7 @@ public:
     AdvanceSimulationEvent(sf::Packet &data);
     Type getType() override;
     sf::Packet toPacket() override;
-    void apply(Game &game) override;
+    void apply(Game::GameLogic &) override;
 };
 class ClearWiresEvent : public NetworkEvent
 {
@@ -49,33 +57,33 @@ public:
     ClearWiresEvent(sf::Packet &data);
     Type getType() override;
     sf::Packet toPacket() override;
-    void apply(Game &game) override;
+    void apply(Game::GameLogic &) override;
 };
 class RectangleChangedEvent : public NetworkEvent
 {
 public:
-    RectangleChangedEvent(int x1, int y1, int x2, int y2, State state);
+    RectangleChangedEvent(int x1, int y1, int x2, int y2, const Game::CellState &state);
     RectangleChangedEvent(sf::Packet &data);
     Type getType() override;
     sf::Packet toPacket() override;
-    void apply(Game &game) override;
+    void apply(Game::GameLogic &) override;
 
 private:
     int x1, y1, x2, y2;
-    State state;
+    unique_ptr<Game::CellState> state;
 };
 class LineChangedEvent : public NetworkEvent
 {
 public:
-    LineChangedEvent(int x1, int y1, int x2, int y2, State state);
+    LineChangedEvent(int x1, int y1, int x2, int y2, const Game::CellState &state);
     LineChangedEvent(sf::Packet &data);
     Type getType() override;
     sf::Packet toPacket() override;
-    void apply(Game &game) override;
+    void apply(Game::GameLogic &) override;
 
 private:
     int x1, y1, x2, y2;
-    State state;
+    unique_ptr<Game::CellState> state;
 };
-
+} // namespace Network
 #endif

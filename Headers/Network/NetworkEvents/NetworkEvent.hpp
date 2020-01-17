@@ -2,21 +2,26 @@
 #define NETWORKEVENT_HPP
 
 #include <SFML/Network.hpp>
-#include "Game.hpp"
-enum Type
+
+#include "Game/GameLogic.hpp"
+
+namespace Network
 {
-    NEW_CLIENT,
-    CELL_CHANGED,
-    RECTANGLE_CHANGED,
-    LINE_CHANGED,
-    ADVANCE_SIMULATION,
-    CLEAR_WIRES
-};
 class NetworkEvent
 {
 public:
+    enum Type
+    {
+        NEW_CLIENT,
+        CELL_CHANGED,
+        RECTANGLE_CHANGED,
+        LINE_CHANGED,
+        ADVANCE_SIMULATION,
+        CLEAR_WIRES
+    };
     virtual Type getType() = 0;
     virtual sf::Packet toPacket() = 0;
-    virtual void apply(Game &game) = 0;
+    virtual void apply(Game::GameLogic &) = 0;
 };
+} // namespace Network
 #endif
