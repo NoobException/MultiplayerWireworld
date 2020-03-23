@@ -9,3 +9,8 @@ GamePresenterImpl::GamePresenterImpl(
       ui_presenter(ui_presenter)
 {
 }
+
+void GamePresenterImpl::draw_grid(const Game::Grid &grid)
+{
+    ui_presenter.draw_grid(grid);
+}

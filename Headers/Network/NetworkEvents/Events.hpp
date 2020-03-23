@@ -5,7 +5,7 @@
 
 #include <SFML/Network.hpp>
 
-#include "Game/GameLogic.hpp"
+#include "Game/Game.hpp"
 #include "Game/Grid.hpp"
 #include "Network/NetworkEvents/NetworkEvent.hpp"
 
@@ -20,7 +20,7 @@ public:
     CellChangedEvent(sf::Packet &data);
     Type getType() override;
     sf::Packet toPacket() override;
-    void apply(Game::GameLogic &) override;
+    void apply(Game::Game &) override;
 
 private:
     int x, y;
@@ -34,7 +34,7 @@ public:
     NewPlayerEvent(sf::Packet &data);
     Type getType() override;
     sf::Packet toPacket() override;
-    void apply(Game::GameLogic &) override;
+    void apply(Game::Game &) override;
 
 private:
     int width;
@@ -48,7 +48,7 @@ public:
     AdvanceSimulationEvent(sf::Packet &data);
     Type getType() override;
     sf::Packet toPacket() override;
-    void apply(Game::GameLogic &) override;
+    void apply(Game::Game &) override;
 };
 class ClearWiresEvent : public NetworkEvent
 {
@@ -57,7 +57,7 @@ public:
     ClearWiresEvent(sf::Packet &data);
     Type getType() override;
     sf::Packet toPacket() override;
-    void apply(Game::GameLogic &) override;
+    void apply(Game::Game &) override;
 };
 class RectangleChangedEvent : public NetworkEvent
 {
@@ -66,7 +66,7 @@ public:
     RectangleChangedEvent(sf::Packet &data);
     Type getType() override;
     sf::Packet toPacket() override;
-    void apply(Game::GameLogic &) override;
+    void apply(Game::Game &) override;
 
 private:
     int x1, y1, x2, y2;
@@ -79,7 +79,7 @@ public:
     LineChangedEvent(sf::Packet &data);
     Type getType() override;
     sf::Packet toPacket() override;
-    void apply(Game::GameLogic &) override;
+    void apply(Game::Game &) override;
 
 private:
     int x1, y1, x2, y2;

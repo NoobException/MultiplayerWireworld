@@ -3,17 +3,17 @@
 
 #include <memory>
 
-#include "GameController/ComponentController.hpp"
-#include "GameController/GameEvent.hpp"
+#include "Game/GameController.hpp"
+#include "Game/GameEvent.hpp"
 #include "Network/Communicator.hpp"
 
 namespace Network
 {
-class NetworkControllerImpl : public GameController::ComponentController
+class NetworkControllerImpl : public Game::GameController
 {
 public:
     NetworkControllerImpl(Network::Communicator &);
-    virtual std::unique_ptr<GameEvent> get_next_game_event() override;
+    virtual std::unique_ptr<Game::GameEvent> get_next_game_event() override;
     virtual bool has_next_game_event() override;
 
 private:

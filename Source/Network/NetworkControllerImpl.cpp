@@ -9,7 +9,7 @@ NetworkControllerImpl::NetworkControllerImpl(
 {
 }
 
-unique_ptr<GameEvent> NetworkControllerImpl::get_next_game_event()
+unique_ptr<Game::GameEvent> NetworkControllerImpl::get_next_game_event()
 {
 }
 bool NetworkControllerImpl::has_next_game_event()

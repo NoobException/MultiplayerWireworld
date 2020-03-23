@@ -3,7 +3,7 @@
 
 #include <SFML/Network.hpp>
 
-#include "Game/GameLogic.hpp"
+#include "Game/Game.hpp"
 
 namespace Network
 {
@@ -21,7 +21,7 @@ public:
     };
     virtual Type getType() = 0;
     virtual sf::Packet toPacket() = 0;
-    virtual void apply(Game::GameLogic &) = 0;
+    virtual void apply(Game::Game &) = 0;
 };
 } // namespace Network
 #endif

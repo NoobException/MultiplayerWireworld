@@ -1,3 +1,4 @@
+#include <memory>
 
 #include <SFML/Graphics.hpp>
 
@@ -9,31 +10,24 @@
 #include "Network/NetworkPresenterImpl.hpp"
 #include "GamePresenter/GamePresenterImpl.hpp"
 
-#include "GameController/GameControllerImpl.hpp"
 #include "Network/NetworkControllerImpl.hpp"
-#include "Game/GameLogicImpl.hpp"
+#include "Game/GameImpl.hpp"
 
 int main()
 {
-    UI::WindowImpl ui_window(
-        sf::VideoMode(640, 640),
-        "Wireworld Test",
-        sf::Style::Close | sf::Style::Titlebar);
-
-    Network::CommunicatorImpl network_communicator;
-
-    Network::NetworkControllerImpl network_controller(network_communicator);
-    Network::NetworkPresenterImpl network_presenter(network_communicator);
-
-    GamePresenter::GamePresenterImpl game_presenter(network_presenter, ui_window);
+    std::shared_ptr<UI::WindowImpl> ui_window =
+        std::make_shared<UI::WindowImpl>(
+            sf::VideoMode(640, 640),
+            "Wireworld Test",
+            sf::Style::Close | sf::Style::Titlebar);
 
     Grid::GridImpl grid(64, 64, Automata::WireworldState(Automata::WireworldState::NONE));
     Automata::Wireworld automaton(grid);
+    std::shared_ptr<Game::GameImpl> game =
+        std::make_shared<Game::GameImpl>(grid, automaton);
 
-    Game::GameLogicImpl logic(game_presenter, grid, automaton);
-    GameController::GameControllerImpl game_controller(logic,
-                                                       ui_window,
-                                                       network_controller);
+    game->add_controller(ui_window);
+    game->add_presenter(ui_window);
 
-    game_controller.start();
+    game->start();
 }
