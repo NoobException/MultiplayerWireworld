@@ -1,35 +1,38 @@
 #ifndef UI_WINDOWIMPL_HPP
 #define UI_WINDOWIMPL_HPP
 
+#include <list>
+#include <memory>
+
 #include <SFML/Graphics.hpp>
 
-#include "Game/GamePresenter.hpp"
-#include "Game/GameController.hpp"
-#include "Game/Grid.hpp"
-
-#include "Game/GameEvent.hpp"
+#include "Game/Game.hpp"
+#include "Game/Component.hpp"
+#include "Game/Cell.hpp"
+#include "UI/GridRenderer.hpp"
+#include "UI/Window.hpp"
 
 namespace UI
 {
-class WindowImpl : public Game::GameController,
-                   public Game::GamePresenter,
-                   public sf::RenderWindow
+class WindowImpl : 
+    public Game::Component,
+    public Window
 {
 public:
-    template <typename... Args>
-    WindowImpl(Args &&... args);
-    std::unique_ptr<Game::GameEvent> get_next_game_event() override;
-    bool has_next_game_event() override;
-    void draw_grid(const Game::Grid &) override;
+    WindowImpl(std::shared_ptr<sf::RenderWindow>);
+    void set_game(std::shared_ptr<Game::Game>);
+    void set_renderer(std::shared_ptr<GridRenderer>);
 
+    void update() override;
+    
 private:
-    sf::View main_view;
+    std::shared_ptr<Game::Game> game;
+    std::shared_ptr<sf::RenderWindow> render_window;
+    std::shared_ptr<GridRenderer> grid_renderer;
+
+    void process_events();
+    void draw_grid();
 };
-template <typename... Args>
-WindowImpl::WindowImpl(Args &&... args) : RenderWindow(std::forward<Args>(args)...)
-{
-    setFramerateLimit(60);
-}
 
 } // namespace UI
 #endif // UI_WINDOW_HPP

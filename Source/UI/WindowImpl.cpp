@@ -1,20 +1,47 @@
-#include "UI/WindowImpl.hpp"
 #include <SFML/Graphics.hpp>
 
-#include "Game/CellCoords.hpp"
-#include "Game/CellState.hpp"
+#include "UI/WindowImpl.hpp"
 
 using namespace UI;
-using namespace sf;
 
-std::unique_ptr<Game::GameEvent> WindowImpl::get_next_game_event()
+
+WindowImpl::WindowImpl(std::shared_ptr<sf::RenderWindow> render_window)
 {
+    this->render_window = render_window;
 }
 
-bool WindowImpl::has_next_game_event()
+void WindowImpl::set_game(std::shared_ptr<Game::Game> game)
 {
+    this->game = game;
 }
 
-void WindowImpl::draw_grid(const Game::Grid &grid)
+void WindowImpl::set_renderer(std::shared_ptr<GridRenderer> renderer)
 {
+    this->grid_renderer = renderer;
 }
+
+void WindowImpl::update()
+{
+    process_events();
+    draw_grid();
+}
+
+void WindowImpl::process_events()
+{
+    sf::Event event;
+    while (render_window->pollEvent(event)) {
+        if (event.type == sf::Event::Closed) {
+            game->quit();
+        }
+    }
+}
+
+
+void WindowImpl::draw_grid()
+{
+    for (auto cell : game->changed_cells())
+    {
+        grid_renderer->draw_cell(move(cell));
+    }
+}
+

@@ -6,38 +6,36 @@
 #include <memory>
 #include <list>
 
-#include "Game/Automaton.hpp"
 #include "Game/Game.hpp"
-#include "Game/GamePresenter.hpp"
-#include "Game/GameController.hpp"
 #include "Game/Grid.hpp"
-#include "Game/Shape.hpp"
+#include "Game/Component.hpp"
 
 namespace Game
 {
 class GameImpl : public Game
 {
 public:
-    GameImpl(Grid &, Automaton &);
-    virtual std::unique_ptr<CellState> get_cell_state(const CellCoords &) override;
-    virtual void set_custom_shape(const Shape &, const CellState &) override;
-    void update() override;
-    void update_automaton() override;
-    bool is_running() override;
+    GameImpl(Grid &);
+    
     void start() override;
     void quit() override;
+    bool is_running() override;
+     
+    void update_automaton() override;
+    
+    Cells changed_cells() override;
+    Cells all_cells() override;
 
-    void add_controller(std::shared_ptr<GameController>);
-    void add_presenter(std::shared_ptr<GamePresenter>);
+    void add_component(std::shared_ptr<Component>);
 
 private:
-    std::list<std::shared_ptr<GameController>> controllers;
-    std::list<std::shared_ptr<GamePresenter>> presenters;
-    void process_events();
-
+    std::list<std::shared_ptr<Component>> components;
+    
     Grid &grid;
-    Automaton &automaton;
     bool running;
+    
+    void update();
+    void process_events();
 };
 } // namespace Game
 

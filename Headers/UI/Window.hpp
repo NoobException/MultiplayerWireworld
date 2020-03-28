@@ -7,5 +7,5 @@ class Window
 {
 
 };
-} // UI
+} // namespace UI
 #endif // UI_WINDOW_HPP
