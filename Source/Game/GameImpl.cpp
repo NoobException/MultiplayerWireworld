@@ -11,6 +11,11 @@ void GameImpl::update_automaton()
 {
 }
 
+void GameImpl::set_cells(std::unique_ptr<Cells> cells)
+{
+    grid.set_cells(move(cells));
+}
+
 void GameImpl::update()
 {
     for (auto &component : components)
@@ -44,13 +49,13 @@ void GameImpl::add_component(std::shared_ptr<Component> component)
 }
 
 
-Cells GameImpl::changed_cells()
+std::unique_ptr<Cells> GameImpl::changed_cells()
 {
-   return grid.get_changed_cells(); 
+   return std::move(grid.get_changed_cells()); 
 }
 
-Cells GameImpl::all_cells()
+std::unique_ptr<Cells> GameImpl::all_cells()
 {
-    return grid.get_all_cells();
+    return std::move(grid.get_all_cells());
 }
 

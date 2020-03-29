@@ -3,14 +3,16 @@
 
 #include <memory>
 
-#include "Game/Cell.hpp"
+#include <SFML/Graphics.hpp>
+
+#include "Game/Cells.hpp"
 
 namespace UI
 {
 class GridRenderer
 {
 public:
-    virtual void draw_cell(std::unique_ptr<Game::Cell>) = 0;
+    virtual void draw_cells(sf::RenderTarget&, const Game::Cells&) = 0;
 };
 
 } // namespace UI

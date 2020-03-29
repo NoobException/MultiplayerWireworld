@@ -22,9 +22,10 @@ public:
     bool is_running() override;
      
     void update_automaton() override;
-    
-    Cells changed_cells() override;
-    Cells all_cells() override;
+    void set_cells(std::unique_ptr<Cells>) override;
+
+    std::unique_ptr<Cells> changed_cells() override;
+    std::unique_ptr<Cells> all_cells() override;
 
     void add_component(std::shared_ptr<Component>);
 

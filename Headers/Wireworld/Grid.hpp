@@ -7,6 +7,7 @@
 
 #include "Game/Grid.hpp"
 #include "Wireworld/Cell.hpp"
+#include "Game/Cells.hpp"
 
 namespace Wireworld
 {
@@ -19,19 +20,23 @@ public:
     virtual void set_cell_state(Game::Cell::Coords&, Game::Cell::State&) override;
     virtual const Game::Cell::State& get_cell_state(Game::Cell::Coords&) const override;
 
+    virtual void set_cells(std::unique_ptr<Game::Cells>) override;
+    
     virtual int get_width() const override;
     virtual int get_height() const override;
 
-    virtual Game::Cells get_changed_cells() override;
-    virtual Game::Cells get_all_cells() override;
+    virtual std::unique_ptr<Game::Cells> get_changed_cells() override;
+    virtual std::unique_ptr<Game::Cells> get_all_cells() override;
 
 private:
-    std::vector<std::unique_ptr<Game::Cell>> all_cells;
-    std::vector<std::unique_ptr<Game::Cell>> changed_cells;
+    std::vector<Cell> all_cells;
+    std::vector<Cell> changed_cells;
     int width, height;
     
     Cell::Coords extract_coords(Game::Cell::Coords&);
     Cell::State extract_state(Game::Cell::State&);
+
+    void create_grid();
 };
 
 class InvalidGridDimensions: std::exception
@@ -49,11 +54,11 @@ private:
 class CoordsNotOnGrid : std::exception
 {
 public:
-    CoordsNotOnGrid(Game::Cell::Coords);
+    CoordsNotOnGrid(Cell::Coords);
     const char *what() const noexcept override;
 
 private:
-    Game::Cell::Coords coords;
+    Cell::Coords coords;
 };
 
 } // namespace Wireworld

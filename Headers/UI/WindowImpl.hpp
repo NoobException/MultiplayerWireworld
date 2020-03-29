@@ -8,9 +8,10 @@
 
 #include "Game/Game.hpp"
 #include "Game/Component.hpp"
-#include "Game/Cell.hpp"
-#include "UI/GridRenderer.hpp"
+
 #include "UI/Window.hpp"
+#include "UI/GridRenderer.hpp"
+#include "UI/GridController.hpp"
 
 namespace UI
 {
@@ -29,9 +30,8 @@ private:
     std::shared_ptr<Game::Game> game;
     std::shared_ptr<sf::RenderWindow> render_window;
     std::shared_ptr<GridRenderer> grid_renderer;
-
+    std::shared_ptr<GridController> grid_controller;
     void process_events();
-    void draw_grid();
 };
 
 } // namespace UI

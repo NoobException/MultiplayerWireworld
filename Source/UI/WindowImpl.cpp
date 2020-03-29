@@ -23,25 +23,41 @@ void WindowImpl::set_renderer(std::shared_ptr<GridRenderer> renderer)
 void WindowImpl::update()
 {
     process_events();
-    draw_grid();
+    grid_renderer->draw_cells(*render_window, *game->changed_cells());
+    grid_renderer->draw_cells(*render_window, *game->all_cells());
+    render_window->display();
+}
+
+
+#include "Wireworld/Cells.hpp"
+void set_cell(std::shared_ptr<Game::Game> game, int x, int y)
+{
+    std::vector<Wireworld::Cell> cells;
+    Wireworld::Cell cell;
+    cell.coords.x = x / 10;
+    cell.coords.y = y / 10;
+    cell.state.type = Wireworld::Cell::State::Head;
+    cells.push_back(cell);
+    std::unique_ptr<Game::Cells> ptr = std::make_unique<Wireworld::Cells>(cells);
+    game->set_cells(move(ptr));
 }
 
 void WindowImpl::process_events()
 {
     sf::Event event;
-    while (render_window->pollEvent(event)) {
-        if (event.type == sf::Event::Closed) {
-            game->quit();
-        }
-    }
-}
-
-
-void WindowImpl::draw_grid()
-{
-    for (auto cell : game->changed_cells())
+    while (render_window->pollEvent(event)) 
     {
-        grid_renderer->draw_cell(move(cell));
+        switch(event.type)
+        {
+        case sf::Event::Closed:
+            game->quit();
+            break;
+        case sf::Event::MouseButtonPressed:
+            set_cell(game, event.mouseButton.x, event.mouseButton.y);
+            break;
+        }
+
     }
 }
+
 

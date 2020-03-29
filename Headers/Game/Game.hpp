@@ -15,10 +15,12 @@ public:
     virtual void quit() = 0;
     virtual bool is_running() = 0;
     
+    virtual void set_cells(std::unique_ptr<Cells>) = 0;
     virtual void update_automaton() = 0;
     
-    virtual Cells changed_cells() = 0;
-    virtual Cells all_cells() = 0;
+
+    virtual std::unique_ptr<Cells> changed_cells() = 0;
+    virtual std::unique_ptr<Cells> all_cells() = 0;
 };
 } // namespace Game
 
