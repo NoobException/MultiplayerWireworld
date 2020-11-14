@@ -28,7 +28,7 @@ namespace line
 {
 bool contains_both_ends(Position left_end, Position right_end)
 {
-  std::list<Cell> cells = Line(Cell::EMPTY, left_end, right_end).getCells();
+  std::list<Cell> cells = Line(Cell::EMPTY, left_end, right_end).get_cells();
   std::list<Position> positions;
   for (auto cell : cells) positions.push_back(cell.position);
 
@@ -38,7 +38,7 @@ bool contains_both_ends(Position left_end, Position right_end)
 
 bool unique_cells(Position left_end, Position right_end)
 {
-  std::list<Cell> cells = Line(Cell::EMPTY, left_end, right_end).getCells();
+  std::list<Cell> cells = Line(Cell::EMPTY, left_end, right_end).get_cells();
   return list_cells_are_unique(cells);
 }
 void vertical_cells_are_unique()
@@ -153,7 +153,7 @@ void cells_are_unique()
   Position bottom_right_corner = {0, 10};
 
   std::list<Cell> cells =
-      Rectangle(Cell::EMPTY, top_left_corner, bottom_right_corner).getCells();
+      Rectangle(Cell::EMPTY, top_left_corner, bottom_right_corner).get_cells();
   ASSERT(list_cells_are_unique(cells));
 }
 
@@ -163,7 +163,7 @@ void run_all_tests()
   test(cells_are_unique);
   end_group("rectangle");
 }
-};  // namespace rectangle
+}  // namespace rectangle
 
 }  // namespace shapes
 void run_all_tests()

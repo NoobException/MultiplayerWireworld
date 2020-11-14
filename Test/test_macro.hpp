@@ -57,7 +57,11 @@ void begin_group(std::string group)
   indent_count += 2;
 }
 
-void end_group(std::string group) { indent_count -= 2; }
+void end_group(std::string group)
+{
+  (void)(group);
+  indent_count -= 2;
+}
 
 #define test(t)                   \
   {                               \
