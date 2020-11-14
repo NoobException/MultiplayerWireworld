@@ -1,2 +1,4 @@
 # MultiplayerWireworld
-Repo for Project of multiplayer Wireworld Cellular Automaton
+Third attempt to make MultiplayerWireworld game
+(and hopefully for similar Cellular Automata)
+

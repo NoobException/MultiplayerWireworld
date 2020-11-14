@@ -2,3 +2,4 @@ Binaries/*
 .vscode/*
 *.bat
 *.py
+compileflags.txt

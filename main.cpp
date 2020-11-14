@@ -1,37 +1,25 @@
 #include <memory>
 
-#include <SFML/Graphics.hpp>
-
-#include "Game/GameImpl.hpp"
-#include "Game/Component.hpp"
-#include "UI/WindowImpl.hpp"
-
-#include "Wireworld/Wireworld.hpp"
+#include "Client.hpp"
+#include "MultiplayerWireworld/Automaton.hpp"
+#include "MultiplayerWireworld/MultiplayerAutomaton.hpp"
+#include "MultiplayerWireworld/Renderer.hpp"
+#include "MultiplayerWireworld/UserInput.hpp"
+#include "Window.hpp"
 
 int main()
 {
-    std::shared_ptr<sf::RenderWindow> render_window = 
-        std::make_shared<sf::RenderWindow>(
-            sf::VideoMode(640, 640),
-            "Wireworld Test",
-            sf::Style::Close | sf::Style::Titlebar);
-    
-    std::shared_ptr<Wireworld::GridRenderer> grid_renderer =
-        std::make_shared<Wireworld::GridRenderer>();
-    
-    std::shared_ptr<UI::WindowImpl> ui_window =
-        std::make_shared<UI::WindowImpl>(render_window);
+  auto multiplayer_wireworld =
+      std::make_shared<MultiplayerWireworld::MultiplayerAutomaton>();
+  auto wireworld_renderer =
+      std::make_unique<MultiplayerWireworld::Renderer>(multiplayer_wireworld);
+  auto wireworld_input =
+      std::make_unique<MultiplayerWireworld::UserInput>(multiplayer_wireworld);
 
-    Wireworld::Grid grid = Wireworld::Grid{64, 64};
+  auto window = std::make_shared<UI::Window>(
+      std::move(wireworld_renderer), std::move(wireworld_input));
+  auto client = std::make_shared<Client>(window);
 
-    std::shared_ptr<Game::GameImpl> game =
-        std::make_shared<Game::GameImpl>(grid);
-    
-    ui_window->set_renderer(grid_renderer);
-    ui_window->set_game(game);
-    game->add_component(ui_window);
-
-    game->start();
-
-    return 0;
+  window->set_game(client);
+  client->start();
 }
