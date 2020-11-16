@@ -1,2 +1,3 @@
 #!/bin/sh
+# Build with default settings and run
 make && Binaries/program

@@ -44,13 +44,9 @@ void UserInput::update(sf::RenderTarget& canvas, sf::Event event)
     else if (event.key.code == sf::Keyboard::Escape)
       placing_shape = false;
     else if (event.key.code == sf::Keyboard::BackSpace)
-    {
-      // Quit game
-    }
+      closed = true;
     else if (event.key.code == sf::Keyboard::Space)
-    {
       automaton->advance();
-    }
   }
   else if (event.type == sf::Event::MouseButtonPressed)
     begin_shape({event.mouseButton.x, event.mouseButton.y});
@@ -92,6 +88,8 @@ Position UserInput::screen_to_cell(ScreenCoords coords) const
 }
 
 void UserInput::place_shape() const { automaton->set_shape(current_shape()); }
+
+bool UserInput::was_closed() { return closed; }
 
 #include <iostream>
 void UserInput::preview_current_shape(sf::RenderTarget& canvas) const

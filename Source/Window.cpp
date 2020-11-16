@@ -25,9 +25,19 @@ Window::Window(
   this->user_input->set_canvas_position(0, 50);
 }
 
-void Window::set_game(std::shared_ptr<Game> new_game) { this->game = new_game; }
+void Window::set_game(std::weak_ptr<Game> new_game) { this->game = new_game; }
 
 void Window::update()
+{
+  process_events();
+  draw();
+}
+
+std::shared_ptr<Game> Window::get_game() { return game.lock(); }
+
+void Window::quit_game() { get_game()->quit(); }
+
+void Window::process_events()
 {
   sf::Event event;
   while (window.pollEvent(event))
@@ -35,12 +45,21 @@ void Window::update()
     switch (event.type)
     {
       case sf::Event::Closed:
-        game->quit();
+        quit_game();
         return;
       default:
         user_input->update(window, event);
     }
+    if (user_input->was_closed())
+    {
+      quit_game();
+      return;
+    }
   }
+}
+
+void Window::draw()
+{
   window.clear({80, 80, 80});
 
   automaton_renderer->render(automaton_canvas);

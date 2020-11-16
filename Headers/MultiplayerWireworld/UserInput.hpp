@@ -18,8 +18,10 @@ public:
   void update(sf::RenderTarget& canvas, sf::Event) override;
   void preview_current_shape(sf::RenderTarget& canvas) const override;
   void set_canvas_position(int x, int y) override;
+  bool was_closed() override;
 
 private:
+  bool closed = false;
   std::shared_ptr<Game> game;
   struct ScreenCoords
   {

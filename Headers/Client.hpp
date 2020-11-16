@@ -14,7 +14,7 @@ public:
 
 private:
   bool running;
-  std::shared_ptr<UI::Window> window;
+  std::weak_ptr<UI::Window> window;
 };
 
 Client::Client(std::shared_ptr<UI::Window> window)
@@ -29,7 +29,7 @@ void Client::start()
   while (running) update();
 }
 
-void Client::update() { window->update(); }
+void Client::update() { window.lock()->update(); }
 
 void Client::quit() { running = false; }
 
