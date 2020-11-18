@@ -1,5 +1,7 @@
 #include "MultiplayerWireworld/MultiplayerAutomaton.hpp"
 
+#include "MultiplayerWireworld/WireworldNetwork.hpp"
+
 using namespace MultiplayerWireworld;
 
 bool MultiplayerCell::operator==(const MultiplayerCell& rhs) const
@@ -24,7 +26,12 @@ std::list<MultiplayerCell> MultiplayerAutomaton::get_cells(
 void MultiplayerAutomaton::set_shape(const Shape& shape)
 {
   set_cells(shape.get_cells());
+  wireworld_network->send_action(std::make_unique<SetShape>(shape));
 }
 
-void MultiplayerAutomaton::advance() { automaton.advance(); }
+void MultiplayerAutomaton::advance()
+{
+  automaton.advance();
+  wireworld_network->send_action(std::make_unique<Advance>());
+}
 

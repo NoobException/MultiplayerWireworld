@@ -87,14 +87,14 @@ Position UserInput::screen_to_cell(ScreenCoords coords) const
   return {coords.x / 10, coords.y / 10};
 }
 
-void UserInput::place_shape() const { automaton->set_shape(current_shape()); }
+void UserInput::place_shape() const { automaton->set_shape(*current_shape()); }
 
 bool UserInput::was_closed() { return closed; }
 
 void UserInput::preview_current_shape(sf::RenderTarget& canvas) const
 {
   if (!placing_shape) return;
-  for (auto cell : current_shape().get_cells())
+  for (auto cell : current_shape()->get_cells())
   {
     sf::Color cell_color = {200, 200, 200, 200};
     sf::RectangleShape rect;
@@ -130,20 +130,20 @@ struct UnableToCreateShape
   const char* what() const noexcept { return "Unable to create shape"; }
 };
 
-Shape UserInput::current_shape() const
+std::unique_ptr<Shape> UserInput::current_shape() const
 {
   Cell::Type current_cell_type = Cell::HEAD;
   switch (current_shape_type)
   {
     case Shape::SINGLE_CELL:
-      return Shape(SingleCell(current_cell_type, current_position));
+      return std::make_unique<SingleCell>(current_cell_type, current_position);
       break;
     case Shape::RECTANGLE:
-      return Shape(
+      return std::make_unique<Rectangle>(
           make_rectangle(last_position, current_position, current_cell_type));
       break;
     case Shape::LINE:
-      return Shape(
+      return std::make_unique<Line>(
           make_line(last_position, current_position, current_cell_type));
       break;
   }
