@@ -21,9 +21,9 @@ std::list<MultiplayerCell> MultiplayerAutomaton::get_cells(
   return cells;
 }
 
-void MultiplayerAutomaton::set_shape(std::unique_ptr<Shape> shape)
+void MultiplayerAutomaton::set_shape(const Shape& shape)
 {
-  set_cells(shape->get_cells());
+  set_cells(shape.get_cells());
 }
 
 void MultiplayerAutomaton::advance() { automaton.advance(); }

@@ -2,7 +2,6 @@
 
 #include <memory>
 
-#include "MultiplayerWireworld/Automaton.hpp"
 using namespace MultiplayerWireworld;
 
 SingleCell::SingleCell(Cell::Type cell_type, Position position)
@@ -14,8 +13,6 @@ std::list<Cell> SingleCell::get_cells() const
 {
   return {{cell_type, position}};
 }
-
-Shape::Type SingleCell::type() const { return Shape::SINGLE_CELL; }
 
 Rectangle::Rectangle(
     Cell::Type cell_type, Position top_left_corner,
@@ -34,8 +31,6 @@ std::list<Cell> Rectangle::get_cells() const
   return result;
 }
 
-Shape::Type Rectangle::type() const { return Shape::RECTANGLE; }
-
 Line::Line(Cell::Type cell_type, Position left_end, Position right_end)
 {
   this->cell_type = cell_type;
@@ -52,7 +47,7 @@ int sign(int value)
   else
     return 1;
 }
-#include <iostream>
+
 std::list<Cell> Line::get_cells() const
 {
   std::list<Cell> result;
@@ -99,6 +94,4 @@ std::list<Cell> Line::get_cells() const
 
   return result;
 }
-
-Shape::Type Line::type() const { return Shape::LINE; }
 

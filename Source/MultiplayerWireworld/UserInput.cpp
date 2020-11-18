@@ -91,11 +91,10 @@ void UserInput::place_shape() const { automaton->set_shape(current_shape()); }
 
 bool UserInput::was_closed() { return closed; }
 
-#include <iostream>
 void UserInput::preview_current_shape(sf::RenderTarget& canvas) const
 {
   if (!placing_shape) return;
-  for (auto cell : current_shape()->get_cells())
+  for (auto cell : current_shape().get_cells())
   {
     sf::Color cell_color = {200, 200, 200, 200};
     sf::RectangleShape rect;
@@ -106,8 +105,7 @@ void UserInput::preview_current_shape(sf::RenderTarget& canvas) const
   }
 }
 
-std::unique_ptr<Rectangle> make_rectangle(
-    Position A, Position B, Cell::Type cell_type)
+Rectangle make_rectangle(Position A, Position B, Cell::Type cell_type)
 {
   int x1 = std::min(A.x, B.x);
   int x2 = std::max(A.x, B.x);
@@ -118,32 +116,37 @@ std::unique_ptr<Rectangle> make_rectangle(
   Position top_left = {x1, y1};
   Position bottom_right = {x2, y2};
 
-  return std::make_unique<Rectangle>(cell_type, top_left, bottom_right);
+  return Rectangle(cell_type, top_left, bottom_right);
 }
 
-std::unique_ptr<Line> make_line(Position A, Position B, Cell::Type cell_type)
+Line make_line(Position A, Position B, Cell::Type cell_type)
 {
   if (B.x < A.x) std::swap(A, B);
-  return std::make_unique<Line>(cell_type, A, B);
+  return Line(cell_type, A, B);
 }
 
-std::unique_ptr<Shape> UserInput::current_shape() const
+struct UnableToCreateShape
 {
-  std::unique_ptr<Shape> shape;
+  const char* what() const noexcept { return "Unable to create shape"; }
+};
+
+Shape UserInput::current_shape() const
+{
   Cell::Type current_cell_type = Cell::HEAD;
   switch (current_shape_type)
   {
     case Shape::SINGLE_CELL:
-      shape = std::make_unique<SingleCell>(current_cell_type, current_position);
+      return Shape(SingleCell(current_cell_type, current_position));
       break;
     case Shape::RECTANGLE:
-      shape =
-          make_rectangle(last_position, current_position, current_cell_type);
+      return Shape(
+          make_rectangle(last_position, current_position, current_cell_type));
       break;
     case Shape::LINE:
-      shape = make_line(last_position, current_position, current_cell_type);
+      return Shape(
+          make_line(last_position, current_position, current_cell_type));
       break;
   }
-  return shape;
+  throw UnableToCreateShape();
 }
 

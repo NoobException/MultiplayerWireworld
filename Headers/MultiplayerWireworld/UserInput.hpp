@@ -36,7 +36,7 @@ private:
   bool placing_shape;
 
   void place_shape() const;
-  std::unique_ptr<Shape> current_shape() const;
+  Shape current_shape() const;
   bool are_coords_valid(ScreenCoords) const;
 
   void begin_shape(ScreenCoords);
