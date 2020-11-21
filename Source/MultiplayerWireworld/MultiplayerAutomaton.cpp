@@ -23,9 +23,9 @@ std::list<MultiplayerCell> MultiplayerAutomaton::get_cells(
   return cells;
 }
 
-void MultiplayerAutomaton::set_shape(const Shape& shape)
+void MultiplayerAutomaton::set_shape(const CellShape& shape)
 {
-  set_cells(shape.get_cells());
+  set_cells(shape.cells());
   wireworld_network->send_action(std::make_unique<SetShape>(shape));
 }
 

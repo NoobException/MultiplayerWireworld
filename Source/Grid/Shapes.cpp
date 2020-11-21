@@ -1,39 +1,30 @@
-#include "MultiplayerWireworld/Shapes.hpp"
+#include "Grid/Shapes.hpp"
 
 #include <memory>
 
-using namespace MultiplayerWireworld;
+using namespace Grid;
 
-SingleCell::SingleCell(Cell::Type cell_type, Position position)
-{
-  this->cell_type = cell_type;
-  this->position = position;
-}
-std::list<Cell> SingleCell::get_cells() const
-{
-  return {{cell_type, position}};
-}
+SingleCell::SingleCell(Position position) { this->position = position; }
 
-Rectangle::Rectangle(
-    Cell::Type cell_type, Position top_left_corner,
-    Position bottom_right_corner)
+std::list<Position> SingleCell::positions() const { return {position}; }
+
+Rectangle::Rectangle(Position top_left_corner, Position bottom_right_corner)
 {
-  this->cell_type = cell_type;
   this->top_left_corner = top_left_corner;
   this->bottom_right_corner = bottom_right_corner;
 }
-std::list<Cell> Rectangle::get_cells() const
+
+std::list<Position> Rectangle::positions() const
 {
-  std::list<Cell> result;
+  std::list<Position> result;
   for (int x = top_left_corner.x; x <= bottom_right_corner.x; x++)
     for (int y = top_left_corner.y; y <= bottom_right_corner.y; y++)
-    { result.push_back({cell_type, {x, y}}); }
+      result.push_back({x, y});
   return result;
 }
 
-Line::Line(Cell::Type cell_type, Position left_end, Position right_end)
+Line::Line(Position left_end, Position right_end)
 {
-  this->cell_type = cell_type;
   this->left_end = left_end;
   this->right_end = right_end;
 }
@@ -48,10 +39,9 @@ int sign(int value)
     return 1;
 }
 
-std::list<Cell> Line::get_cells() const
+std::list<Position> Line::positions() const
 {
-  std::list<Cell> result;
-
+  std::list<Position> result;
   int dx = (right_end.x - left_end.x);
   int dy = (right_end.y - left_end.y);
   int dxm = (dx * left_end.y - dy * left_end.x);
@@ -71,7 +61,7 @@ std::list<Cell> Line::get_cells() const
   }
 
   Position current_position = left_end;
-  result.push_back({cell_type, current_position});
+  result.push_back(current_position);
   while (!(current_position == right_end))
   {
     Position p1 = current_position, p2 = current_position;
@@ -83,15 +73,15 @@ std::list<Cell> Line::get_cells() const
 
     if (std::abs(dy * p1.x - dx * p1.y + dxm) <
         std::abs(dy * p2.x - dx * p2.y + dxm))
-    { current_position = p1; }
+    {
+      current_position = p1;
+    }
     else
     {
       current_position = p2;
     }
-
-    result.push_back({cell_type, current_position});
+    result.push_back(current_position);
   }
 
   return result;
 }
-

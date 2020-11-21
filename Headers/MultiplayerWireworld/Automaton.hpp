@@ -1,18 +1,13 @@
-#ifndef MULTIPLAYER_WIREWORLD_HPP
-#define MULTIPLAYER_WIREWORLD_HPP
+#ifndef MULTIPLAYER_WIREWORLD_AUTOMATON_HPP
+#define MULTIPLAYER_WIREWORLD_AUTOMATON_HPP
 
 #include <list>
 #include <map>
 
+#include "Grid/Grid.hpp"
+
 namespace MultiplayerWireworld
 {
-struct Position
-{
-  int x, y;
-  bool operator==(const Position& rhs) const;
-  bool operator<(const Position& rhs) const;
-};
-
 struct Cell
 {
   enum Type

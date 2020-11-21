@@ -8,6 +8,7 @@
 #include "Automaton.hpp"
 #include "MultiplayerAutomaton.hpp"
 #include "MultiplayerWireworld/Shapes.hpp"
+#include "Shapes.hpp"
 
 namespace MultiplayerWireworld
 {
@@ -28,7 +29,7 @@ private:
     int x, y;
   };
   std::shared_ptr<MultiplayerAutomaton> automaton;
-  Shape::Type current_shape_type = Shape::SINGLE_CELL;
+  Grid::Shape::Type current_shape_type = Grid::Shape::SINGLE_CELL;
   ScreenCoords canvas_position;
 
   Position last_position;
@@ -36,7 +37,7 @@ private:
   bool placing_shape;
 
   void place_shape() const;
-  std::unique_ptr<Shape> current_shape() const;
+  CellShape current_shape() const;
   bool are_coords_valid(ScreenCoords) const;
 
   void begin_shape(ScreenCoords);

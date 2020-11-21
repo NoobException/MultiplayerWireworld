@@ -19,7 +19,7 @@ struct MultiplayerCell
 class MultiplayerAutomaton
 {
 public:
-  void set_shape(const Shape &);
+  void set_shape(const CellShape &);
   void set_cells(const std::list<Cell> &);
   void advance();
   std::list<MultiplayerCell> get_cells(const std::list<Position> &) const;

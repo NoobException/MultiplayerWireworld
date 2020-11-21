@@ -31,5 +31,5 @@ int main()
 {
   meta_tests();
   multiplayer_wireworld_automaton::automaton::run_all_tests();
-  multiplayer_wireworld_shapes::run_all_tests();
+  grid_shapes::run_all_tests();
 }

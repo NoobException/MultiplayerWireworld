@@ -2,19 +2,6 @@
 
 using namespace MultiplayerWireworld;
 
-bool Position::operator==(const Position& rhs) const
-{
-  return x == rhs.x && y == rhs.y;
-}
-
-bool Position::operator<(const Position& rhs) const
-{
-  if (x != rhs.x)
-    return x < rhs.x;
-  else
-    return y < rhs.y;
-}
-
 bool Cell::operator==(const Cell& rhs) const
 {
   return type == rhs.type && position == rhs.position;

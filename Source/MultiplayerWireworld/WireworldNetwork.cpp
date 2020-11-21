@@ -4,6 +4,7 @@
 #include "MultiplayerWireworld/Shapes.hpp"
 
 using namespace MultiplayerWireworld;
+using namespace Grid;
 
 #define UNUSED(x) (void)(x)
 
@@ -14,7 +15,7 @@ void cerr_pos(Position p) { std::cerr << "(" << p.x << ", " << p.y << ")"; }
 class ShapeToPacket : public ConstShapeVisitor
 {
 public:
-  void visit(const SingleCell& s)
+  void visit(const SingleCell& s) override
   {
     std::cerr << "Visiting SingleCell: ";
     cerr_pos(s.position);
@@ -22,7 +23,7 @@ public:
     UNUSED(s);
   }
 
-  void visit(const Rectangle& r)
+  void visit(const Rectangle& r) override
   {
     std::cerr << "Visiting Rectangle: ";
     cerr_pos(r.top_left_corner);
@@ -32,7 +33,7 @@ public:
     UNUSED(r);
   }
 
-  void visit(const Line& l)
+  void visit(const Line& l) override
   {
     std::cerr << "Visiting Line: ";
     cerr_pos(l.left_end);
@@ -50,7 +51,7 @@ public:
   {
     std::cerr << "Visiting SetShape\n";
     ShapeToPacket shape_to_packet;
-    action.shape.get().accept(shape_to_packet);
+    action.cell_shape.shape->accept(shape_to_packet);
     UNUSED(action);
   }
 

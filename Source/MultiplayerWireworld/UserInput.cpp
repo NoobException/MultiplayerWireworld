@@ -1,9 +1,7 @@
 #include "MultiplayerWireworld/UserInput.hpp"
 
-#include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/Graphics/RenderTarget.hpp>
-#include <SFML/Window/Event.hpp>
-#include <SFML/Window/Keyboard.hpp>
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
 #include <memory>
 
 #include "MultiplayerWireworld/Automaton.hpp"
@@ -36,11 +34,11 @@ void UserInput::update(sf::RenderTarget& canvas, sf::Event event)
   if (event.type == sf::Event::KeyPressed)
   {
     if (event.key.code == sf::Keyboard::Num1)
-      current_shape_type = Shape::SINGLE_CELL;
+      current_shape_type = Grid::Shape::SINGLE_CELL;
     else if (event.key.code == sf::Keyboard::Num2)
-      current_shape_type = Shape::RECTANGLE;
+      current_shape_type = Grid::Shape::RECTANGLE;
     else if (event.key.code == sf::Keyboard::Num3)
-      current_shape_type = Shape::LINE;
+      current_shape_type = Grid::Shape::LINE;
     else if (event.key.code == sf::Keyboard::Escape)
       placing_shape = false;
     else if (event.key.code == sf::Keyboard::BackSpace)
@@ -87,14 +85,14 @@ Position UserInput::screen_to_cell(ScreenCoords coords) const
   return {coords.x / 10, coords.y / 10};
 }
 
-void UserInput::place_shape() const { automaton->set_shape(*current_shape()); }
+void UserInput::place_shape() const { automaton->set_shape(current_shape()); }
 
 bool UserInput::was_closed() { return closed; }
 
 void UserInput::preview_current_shape(sf::RenderTarget& canvas) const
 {
   if (!placing_shape) return;
-  for (auto cell : current_shape()->get_cells())
+  for (auto cell : current_shape().cells())
   {
     sf::Color cell_color = {200, 200, 200, 200};
     sf::RectangleShape rect;
@@ -105,7 +103,7 @@ void UserInput::preview_current_shape(sf::RenderTarget& canvas) const
   }
 }
 
-Rectangle make_rectangle(Position A, Position B, Cell::Type cell_type)
+Grid::Rectangle make_rectangle(Position A, Position B)
 {
   int x1 = std::min(A.x, B.x);
   int x2 = std::max(A.x, B.x);
@@ -116,13 +114,13 @@ Rectangle make_rectangle(Position A, Position B, Cell::Type cell_type)
   Position top_left = {x1, y1};
   Position bottom_right = {x2, y2};
 
-  return Rectangle(cell_type, top_left, bottom_right);
+  return Grid::Rectangle(top_left, bottom_right);
 }
 
-Line make_line(Position A, Position B, Cell::Type cell_type)
+Grid::Line make_line(Position A, Position B)
 {
   if (B.x < A.x) std::swap(A, B);
-  return Line(cell_type, A, B);
+  return Grid::Line(A, B);
 }
 
 struct UnableToCreateShape
@@ -130,23 +128,30 @@ struct UnableToCreateShape
   const char* what() const noexcept { return "Unable to create shape"; }
 };
 
-std::unique_ptr<Shape> UserInput::current_shape() const
+CellShape UserInput::current_shape() const
 {
   Cell::Type current_cell_type = Cell::HEAD;
+  Cell current_cell_model = Cell{};
+  current_cell_model.type = current_cell_type;
+
+  std::unique_ptr<Grid::Shape> shape;
   switch (current_shape_type)
   {
-    case Shape::SINGLE_CELL:
-      return std::make_unique<SingleCell>(current_cell_type, current_position);
+    case Grid::Shape::SINGLE_CELL:
+      shape = std::make_unique<Grid::SingleCell>(current_position);
       break;
-    case Shape::RECTANGLE:
-      return std::make_unique<Rectangle>(
-          make_rectangle(last_position, current_position, current_cell_type));
+    case Grid::Shape::RECTANGLE:
+      shape = std::make_unique<Grid::Rectangle>(
+          make_rectangle(last_position, current_position));
       break;
-    case Shape::LINE:
-      return std::make_unique<Line>(
-          make_line(last_position, current_position, current_cell_type));
+    case Grid::Shape::LINE:
+      shape = std::make_unique<Grid::Line>(
+          make_line(last_position, current_position));
       break;
+    default:
+      throw UnableToCreateShape();
   }
-  throw UnableToCreateShape();
+
+  return {current_cell_model, move(shape)};
 }
 

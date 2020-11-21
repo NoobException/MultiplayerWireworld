@@ -28,9 +28,8 @@ struct Action
 
 struct SetShape : public Action
 {
-  std::reference_wrapper<const Shape> shape;
-  SetShape(const Shape& shape) : shape(std::cref(shape)) {}
-
+  const CellShape& cell_shape;
+  SetShape(const CellShape& shape) : cell_shape(shape) {}
   void accept(ActionVisitor& visitor) override { visitor.visit(*this); };
 };
 
