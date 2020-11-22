@@ -1,11 +1,11 @@
 CXX = g++ -std=c++2a
 SFML_LIBS = -lsfml-graphics -lsfml-window -lsfml-system
 
-SOURCE = $(shell find Source/ | grep .cpp)
+SOURCE = $(shell find Source/ -type f -name '*.cpp')
 HEADERS = -IHeaders #$(shell find Headers -type d | awk '{print "-I"$$1}')
 OUTPUT = Binaries/program
 
-TEST_SOURCE = ${shell find Test/Source | grep .cpp}
+TEST_SOURCE = ${shell find Test/Source -type f -name '*.cpp'}
 TEST_HEADERS = -ITest/Headers
 TEST_OUTPUT = Binaries/test_suite
 
