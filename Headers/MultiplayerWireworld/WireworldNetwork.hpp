@@ -2,7 +2,6 @@
 #define WIREWORLD_NETWORK_HPP
 
 #include <SFML/Network.hpp>
-#include <functional>
 #include <list>
 #include <memory>
 
