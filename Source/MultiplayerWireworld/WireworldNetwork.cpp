@@ -1,5 +1,6 @@
 #include "MultiplayerWireworld/WireworldNetwork.hpp"
 
+#include "Grid/Shapes.hpp"
 #include "MultiplayerWireworld/Automaton.hpp"
 #include "MultiplayerWireworld/Shapes.hpp"
 
@@ -15,9 +16,14 @@ void cerr_pos(Position p) { std::cerr << "(" << p.x << ", " << p.y << ")"; }
 class ShapeToPacket : public ConstShapeVisitor
 {
 public:
+  void visit_shape(const Shape& shape)
+  {
+    std::cerr << "Visiting " + shape_type_to_string(shape.type()) << ": ";
+  }
+
   void visit(const SingleCell& s) override
   {
-    std::cerr << "Visiting SingleCell: ";
+    visit_shape(s);
     cerr_pos(s.position);
     std::cerr << "\n";
     UNUSED(s);
@@ -25,7 +31,7 @@ public:
 
   void visit(const Rectangle& r) override
   {
-    std::cerr << "Visiting Rectangle: ";
+    visit_shape(r);
     cerr_pos(r.top_left_corner);
     std::cerr << " ";
     cerr_pos(r.bottom_right_corner);
@@ -35,7 +41,7 @@ public:
 
   void visit(const Line& l) override
   {
-    std::cerr << "Visiting Line: ";
+    visit_shape(l);
     cerr_pos(l.left_end);
     std::cerr << " ";
     cerr_pos(l.right_end);
@@ -49,7 +55,8 @@ class ActionToPacket : public ActionVisitor
 public:
   void visit(SetShape& action) override
   {
-    std::cerr << "Visiting SetShape\n";
+    auto cell_type_string = cell_type_to_string(action.cell_shape.cell.type);
+    std::cerr << "Visiting SetShape [" << cell_type_string << "]\n";
     ShapeToPacket shape_to_packet;
     action.cell_shape.shape->accept(shape_to_packet);
     UNUSED(action);

@@ -1,5 +1,6 @@
 #include "Grid/Shapes.hpp"
 
+#include <map>
 #include <memory>
 
 using namespace Grid;
@@ -84,4 +85,14 @@ std::list<Position> Line::positions() const
   }
 
   return result;
+}
+
+std::string Grid::shape_type_to_string(Shape::Type type)
+{
+  static const std::map<Grid::Shape::Type, std::string> map = {
+      {Grid::Shape::SINGLE_CELL, "Single Cell"},
+      {Grid::Shape::RECTANGLE, "Rectangle"},
+      {Grid::Shape::LINE, "Line"},
+  };
+  return map.at(type);
 }

@@ -22,10 +22,10 @@ bool UserInput::are_coords_valid(ScreenCoords coords) const
 {
   if (coords.x < canvas_position.x || coords.y < canvas_position.y)
     return false;
-
   return true;
 }
 
+#include <iostream>
 void UserInput::update(sf::RenderTarget& canvas, sf::Event event)
 {
   // Get rid of the 'unused variable' error
@@ -52,6 +52,8 @@ void UserInput::update(sf::RenderTarget& canvas, sf::Event event)
     end_shape({event.mouseButton.x, event.mouseButton.y});
   else if (event.type == sf::Event::MouseMoved)
     update_shape({event.mouseMove.x, event.mouseMove.y});
+
+  deleting_shape = sf::Mouse::isButtonPressed(sf::Mouse::Button::Right);
 }
 
 void UserInput::begin_shape(ScreenCoords coords)
@@ -130,9 +132,9 @@ struct UnableToCreateShape
 
 CellShape UserInput::current_shape() const
 {
-  Cell::Type current_cell_type = Cell::HEAD;
   Cell current_cell_model = Cell{};
   current_cell_model.type = current_cell_type;
+  if (deleting_shape) current_cell_model.type = Cell::Type::EMPTY;
 
   std::unique_ptr<Grid::Shape> shape;
   switch (current_shape_type)
@@ -155,3 +157,10 @@ CellShape UserInput::current_shape() const
   return {current_cell_model, move(shape)};
 }
 
+void UserInput::draw(UI::TextMenu& text_menu)
+{
+  auto shape_name = Grid::shape_type_to_string(current_shape_type);
+  text_menu.drawTextAt({"Shape: " + shape_name}, {5, 5});
+  auto cell_name = cell_type_to_string(current_cell_type);
+  text_menu.drawTextAt({"Cell: " + cell_name}, {5, 30});
+}

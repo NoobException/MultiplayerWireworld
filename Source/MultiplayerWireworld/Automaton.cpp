@@ -61,3 +61,13 @@ std::list<Position> Automaton::neighbors(Position position)
     }
   return result;
 }
+
+std::string MultiplayerWireworld::cell_type_to_string(Cell::Type type)
+{
+  static const std::map<Cell::Type, std::string> map = {
+      {Cell::Type::EMPTY, "Empty"},
+      {Cell::Type::CONDUCTOR, "Conductor"},
+      {Cell::Type::HEAD, "Head"},
+      {Cell::Type::TAIL, "Tail"}};
+  return map.at(type);
+}

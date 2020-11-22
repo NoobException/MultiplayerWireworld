@@ -2,6 +2,7 @@
 #define SHAPES_HPP
 
 #include <list>
+#include <string>
 
 #include "Grid.hpp"
 
@@ -87,6 +88,8 @@ struct Line : public Shape
   }
   std::list<Position> positions() const override;
 };
+
+std::string shape_type_to_string(Grid::Shape::Type type);
 
 }  // namespace Grid
 #endif

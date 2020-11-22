@@ -3,6 +3,7 @@
 
 #include <list>
 #include <map>
+#include <string>
 
 #include "Grid/Grid.hpp"
 
@@ -35,6 +36,8 @@ public:
 private:
   std::list<Position> neighbors(Position);
 };
+
+std::string cell_type_to_string(Cell::Type type);
 
 }  // namespace MultiplayerWireworld
 

@@ -1,16 +1,37 @@
 #include "Window.hpp"
 
-#include <SFML/Graphics/RenderTexture.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Window/VideoMode.hpp>
-#include <SFML/Window/Window.hpp>
-#include <SFML/Window/WindowStyle.hpp>
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
 #include <memory>
 
 #include "AutomatonRenderer.hpp"
 #include "UserInput.hpp"
 
 using namespace UI;
+
+class SimpleTextMenu : public TextMenu
+{
+  sf::RenderTexture& surface;
+
+public:
+  SimpleTextMenu(sf::RenderTexture& surface) : surface(surface) {}
+
+  void drawTextAt(const TextData& text_data, Position position) override
+  {
+    (void)(position);
+    sf::Text text;
+    text.setString(text_data.text);
+    text.setPosition(
+        static_cast<float>(position.x), static_cast<float>(position.y));
+    sf::Font font;
+    font.loadFromFile("Fonts/DejaVuSans.ttf");
+    text.setFont(font);
+    text.setCharacterSize(14);
+    surface.draw(text);
+  }
+
+  void clear() override { surface.clear(); }
+};
 
 Window::Window(
     std::unique_ptr<AutomatonRenderer> automaton_renderer,
@@ -69,6 +90,16 @@ void Window::draw()
   sf::Sprite sprite(automaton_canvas.getTexture());
   sprite.setPosition({0, 50});
   window.draw(sprite);
+
+  sf::RenderTexture menu_texture;
+  menu_texture.create(640, 50);
+  SimpleTextMenu menu(menu_texture);
+  user_input->draw(menu);
+
+  menu_texture.display();
+  sf::Sprite menu_sprite(menu_texture.getTexture());
+  menu_sprite.setPosition({0, 0});
+  window.draw(menu_sprite);
 
   window.display();
 }

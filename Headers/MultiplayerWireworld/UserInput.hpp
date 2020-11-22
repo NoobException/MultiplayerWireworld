@@ -20,6 +20,7 @@ public:
   void preview_current_shape(sf::RenderTarget& canvas) const override;
   void set_canvas_position(int x, int y) override;
   bool was_closed() override;
+  void draw(UI::TextMenu&) override;
 
 private:
   bool closed = false;
@@ -28,13 +29,15 @@ private:
   {
     int x, y;
   };
+  Cell::Type current_cell_type = Cell::HEAD;
   std::shared_ptr<MultiplayerAutomaton> automaton;
   Grid::Shape::Type current_shape_type = Grid::Shape::SINGLE_CELL;
   ScreenCoords canvas_position;
 
   Position last_position;
   Position current_position;
-  bool placing_shape;
+  bool placing_shape = false;
+  bool deleting_shape = false;
 
   void place_shape() const;
   CellShape current_shape() const;
